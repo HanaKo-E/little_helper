@@ -1,0 +1,25 @@
+name: Update Raindrop Data
+on:
+  schedule:
+    - cron: '0 * * * *' # 每小時自動執行一次
+  workflow_dispatch:      # 允許手動點擊執行
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Fetch Data from Raindrop
+        run: |
+          curl -H "Authorization: Bearer ${{ secrets.RAINDROP_TOKEN }}" \
+          "https://api.raindrop.io/rest/v1/raindrops/0" > data.json
+
+      - name: Commit and Push if changed
+        run: |
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
+          git add data.json
+          git commit -m "Auto update data" || exit 0
+          git push
