@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的收藏儀表板 V3.5</title>
+    <title>我的靈感儀表板 v2.0 (自動同步版)</title>
     <style>
         :root {
-            --primary-color: #007bff;
-            --bg-color: #f8f9fa;
+            --primary-color: #2c3e50;
+            --accent-color: #3498db;
+            --bg-color: #f4f7f6;
             --card-bg: #ffffff;
         }
         body {
@@ -19,57 +20,52 @@
         }
         .header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
         }
-        /* 手機解鎖按鈕：半透明隱藏式設計 */
-        .unlock-btn {
-            opacity: 0.2;
-            border: none;
-            background: none;
-            cursor: pointer;
-            font-size: 20px;
-            transition: opacity 0.3s;
+        .header h1 {
+            color: var(--primary-color);
+            letter-spacing: 1px;
         }
-        .unlock-btn:hover { opacity: 1; }
-
         .dashboard {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
+            gap: 25px;
             max-width: 1200px;
             margin: 0 auto;
         }
         .link-card {
             background: var(--card-bg);
-            border-radius: 15px;
+            border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
             display: flex;
             flex-direction: column;
+            border: 1px solid rgba(0,0,0,0.05);
         }
         .link-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            transform: translateY(-10px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.15);
         }
         .cover-img {
             width: 100%;
-            height: 160px;
+            height: 180px;
             object-fit: cover;
-            background: #e9ecef;
+            background: #dfe6e9;
         }
         .card-content {
-            padding: 15px;
+            padding: 20px;
             flex-grow: 1;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
         }
         .card-title {
-            font-size: 1.05em;
+            font-size: 1.1em;
             font-weight: 600;
-            margin-bottom: 12px;
-            line-height: 1.4;
+            margin-bottom: 15px;
+            line-height: 1.5;
+            color: var(--primary-color);
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
@@ -78,101 +74,77 @@
         .btn {
             display: block;
             text-align: center;
-            padding: 10px;
-            background: var(--primary-color);
+            padding: 12px;
+            background: var(--accent-color);
             color: white;
             text-decoration: none;
-            border-radius: 8px;
+            border-radius: 6px;
+            font-size: 0.9em;
             font-weight: 500;
-            transition: background 0.2s;
+            transition: background 0.3s;
         }
-        .btn:hover { background: #0056b3; }
+        .btn:hover { background: #2980b9; }
 
-        /* 警告與提示 */
-        .msg-container {
-            max-width: 600px;
-            margin: 50px auto;
-            padding: 30px;
-            background: #fff3cd;
-            border: 1px solid #ffeeba;
-            border-radius: 12px;
+        /* 載入中與錯誤提示 */
+        #status {
             text-align: center;
+            margin-top: 50px;
+            font-size: 1.1em;
+            color: #7f8c8d;
         }
-        code {
-            background: #eee;
-            padding: 2px 6px;
-            border-radius: 4px;
-            color: #d63384;
-            word-break: break-all;
+        .error-msg {
+            background: #fab1a0;
+            color: #d63031;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 500px;
+            margin: 0 auto;
         }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <h1>我的收藏儀表板</h1>
-        <button class="unlock-btn" onclick="unlockDevice()" title="手機端解鎖">🔓</button>
+        <h1>我的靈感儀表板</h1>
+        <p style="color: #95a5a6; font-size: 0.9em;">(資料每小時自動更新一次)</p>
     </div>
 
-    <div id="status"></div>
+    <div id="status">正在同步雲端收藏...</div>
     <div id="dashboard" class="dashboard"></div>
 
     <script>
-        // 1. 嘗試獲取權杖
-        const TOKEN = localStorage.getItem('MY_RAIN_TOKEN');
-        const statusEl = document.getElementById('status');
-        const dashboardEl = document.getElementById('dashboard');
-
-        // 手機與電腦通用的解鎖函數
-        function unlockDevice() {
-            const token = prompt("請貼入你的 Raindrop 權杖 (Token)：");
-            if (token && token.trim().length > 10) {
-                localStorage.setItem('MY_RAIN_TOKEN', token.trim());
-                alert("權杖已存入！網頁即將重新整理。");
-                location.reload();
-            } else if (token) {
-                alert("權杖格式似乎不正確，請重新檢查。");
-            }
-        }
-
         async function fetchRaindrops() {
-            if (!TOKEN) {
-                statusEl.innerHTML = `
-                    <div class="msg-container">
-                        <h3>⚠️ 尚未偵測到權杖</h3>
-                        <p>這是一個安全保護機制。請點擊上方的 🔓 圖示，或在 Console 執行：</p>
-                        <code>localStorage.setItem('MY_RAIN_TOKEN', '你的權杖');</code>
-                        <p style="margin-top:20px; font-size:0.8em; color: #856404;">(完成後請重新整理網頁)</p>
-                    </div>
-                `;
-                return;
-            }
+            const statusEl = document.getElementById('status');
+            const dashboardEl = document.getElementById('dashboard');
 
             try {
-                // 抓取所有書籤 (0 代表所有)
-                const response = await fetch('https://api.raindrop.io/rest/v1/raindrops/0', {
-                    headers: { 'Authorization': `Bearer ${TOKEN}` }
-                });
-
-                if (!response.ok) throw new Error('權杖無效或 API 限制');
+                // 自動化 2.0 關鍵：直接讀取同目錄下的 data.json
+                const response = await fetch('./data.json?t=' + new Date().getTime()); // 加時間戳避免快取
+                
+                if (!response.ok) {
+                    throw new Error('尚未偵測到數據檔案。請確保 GitHub Actions 已成功執行過一次並產生 data.json。');
+                }
 
                 const data = await response.json();
+                statusEl.style.display = 'none';
                 
-                if (data.items.length === 0) {
-                    statusEl.innerHTML = '<div class="msg-container">目前沒有任何收藏連結。</div>';
+                if (!data.items || data.items.length === 0) {
+                    statusEl.innerHTML = '目前的收藏夾是空的。';
+                    statusEl.style.display = 'block';
                     return;
                 }
 
                 data.items.forEach(item => {
                     const card = document.createElement('div');
                     card.className = 'link-card';
-                    const cover = item.cover || 'https://via.placeholder.com/300x160?text=No+Image';
+                    // 優先使用 Raindrop 的縮圖，若無則使用預設圖
+                    const cover = item.cover || 'https://via.placeholder.com/300x180?text=No+Image';
                     
                     card.innerHTML = `
                         <img src="${cover}" class="cover-img" loading="lazy">
                         <div class="card-content">
                             <div class="card-title">${item.title || '無標題'}</div>
-                            <a href="${item.link}" target="_blank" class="btn">立即觀看 →</a>
+                            <a href="${item.link}" target="_blank" class="btn">立即觀看</a>
                         </div>
                     `;
                     dashboardEl.appendChild(card);
@@ -180,10 +152,12 @@
 
             } catch (err) {
                 statusEl.innerHTML = `
-                    <div class="msg-container" style="background:#f8d7da; border-color:#f5c6cb; color:#721c24;">
-                        <h3>❌ 抓取失敗</h3>
+                    <div class="error-msg">
+                        <h3>⏳ 等待首次資料同步...</h3>
                         <p>${err.message}</p>
-                        <button onclick="localStorage.removeItem('MY_RAIN_TOKEN'); location.reload();">重設權杖</button>
+                        <p style="font-size: 0.8em; margin-top:10px;">
+                            請確認你的 GitHub Actions 已經跑完綠色勾勾，<br>且倉庫裡已經出現 data.json 檔案。
+                        </p>
                     </div>
                 `;
             }
