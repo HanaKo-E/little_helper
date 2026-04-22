@@ -14,7 +14,7 @@
         .header h1 { color: var(--primary-green); font-weight: 900; letter-spacing: 2px; }
         .controls-container { max-width: 800px; margin: 0 auto 20px; position: sticky; top: 10px; z-index: 101; display: flex; flex-direction: column; gap: 10px; }
         .search-bar-row { display: flex; gap: 10px; }
-        #search-input { flex-grow: 1; padding: 12px 25px; border-radius: 30px; border: 2px solid var(--primary-green); font-size: 1em; outline: none; }
+        #search-input { flex-grow: 1; padding: 12px 25px; border-radius: 30px; border: 2px solid var(--primary-green); font-size: 1em; outline: none; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         .mode-toggle { display: flex; background: #cfd8dc; border-radius: 20px; padding: 2px; }
         .mode-btn { border: none; background: none; padding: 6px 12px; cursor: pointer; border-radius: 18px; font-size: 0.9em; }
         .mode-btn.active { background: var(--primary-green); color: white; }
@@ -31,18 +31,20 @@
         .tag-wrapper { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
         .tag-badge { font-size: 10px; background: #e8f5e9; padding: 2px 8px; border-radius: 4px; color: var(--primary-green); font-weight: 500; cursor: pointer; }
         
-        /* 通用資訊樣式 */
+        /* 資訊樣式 */
         .info-section { margin-top: 5px; font-size: 0.88em; line-height: 1.6; border-top: 1px solid #eee; padding-top: 10px; }
         .info-item { margin-bottom: 4px; display: flex; align-items: flex-start; gap: 6px; }
-        .map-link { color: var(--map-blue); text-decoration: none; font-weight: 500; border-bottom: none; } /* 徹底移除底線 */
-        .map-link:hover { opacity: 0.8; }
-        .note-text { color: #78909c; font-style: italic; font-size: 0.9em; margin-top: 5px; }
+        .map-link { color: var(--map-blue); text-decoration: none !important; font-weight: 500; } /* 絕對不顯示底線 */
+        .map-link:hover { text-decoration: none !important; opacity: 0.8; }
+        
+        /* 卡片模式下的 NOTE：取消斜體，維持色值與大小 */
+        .note-text { color: #78909c; font-style: normal; font-size: 0.9em; margin-top: 5px; }
 
         .btn { align-self: flex-end; margin-top: auto; width: 40px; height: 40px; background: var(--primary-green); color: white; text-decoration: none; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.2em; flex-shrink: 0; }
 
-        /* --- 清單模式優化 --- */
+        /* --- 清單模式：隱藏 NOTE 並優化空間 --- */
         .dashboard.list-mode { grid-template-columns: 1fr; gap: 8px; }
-        .list-mode .link-card { flex-direction: row; min-height: 65px; padding: 10px 24px; align-items: center; }
+        .list-mode .link-card { flex-direction: row; min-height: 60px; padding: 8px 24px; align-items: center; }
         .list-mode .cover-img { display: none; }
         .list-mode .card-content { padding: 0; flex-direction: row; align-items: center; width: 100%; gap: 30px; }
         
@@ -50,10 +52,12 @@
         .list-mode .tag-wrapper { margin-bottom: 0; flex: 0 0 15%; min-width: 135px; }
         .list-mode .tag-badge { font-size: 12px; padding: 3px 10px; }
         
-        .list-mode .info-section { border-top: none; padding-top: 0; margin-top: 0; display: flex; flex: 1; align-items: center; gap: 25px; }
+        .list-mode .info-section { border-top: none; padding-top: 0; margin-top: 0; display: flex; flex: 1; align-items: center; gap: 30px; }
         .list-mode .shop-name-item { flex: 0 0 180px; font-size: 0.95em; font-weight: 600; color: #455a64; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .list-mode .address-item { flex: 1; font-size: 0.9em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .list-mode .note-text { flex: 0 0 150px; font-size: 0.85em; margin-top: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        
+        /* 關鍵：清單模式下隱藏備註 */
+        .list-mode .note-text { display: none; }
         
         .list-mode .btn { margin-top: 0; margin-left: 10px; width: 36px; height: 36px; }
 
@@ -114,21 +118,16 @@
                 const tagHtml = (item.tags || []).map(t => `<span class="tag-badge" onclick="quickSearch('${t}')">${t}</span>`).join('');
                 
                 let infoHtml = '';
-                let name = "";
-                let addr = "";
-                let extraNote = "";
+                let name = ""; let addr = ""; let extraNote = "";
 
                 if (item.note && item.note.includes('|')) {
                     const parts = item.note.split('|').map(p => p.trim());
-                    name = parts[0]; 
-                    addr = parts[1];
-                    extraNote = parts[2] || ""; // 如果有第三段，作為純備註
+                    name = parts[0]; addr = parts[1]; extraNote = parts[2] || "";
                 } else {
-                    extraNote = item.note || ""; // 沒有分隔符時，整個 note 都是備註
+                    extraNote = item.note || "";
                 }
 
                 const mapUrl = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(addr || name);
-                
                 let nameHtml = name ? `<div class="info-item shop-name-item">🏠 ${name}</div>` : '';
                 let addrHtml = addr ? `<div class="info-item address-item">📍 <a href="${mapUrl}" target="_blank" class="map-link">${addr}</a></div>` : '';
                 let noteHtml = extraNote ? `<div class="note-text">💡 ${extraNote}</div>` : '';
