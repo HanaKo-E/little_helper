@@ -3,30 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的小幫手 v3.5</title>
+    <title>我的小幫手 v3.8</title>
     <style>
+        /* 引入 Google Fonts: Kosugi Maru (標題) 與 DotGothic16 (內文) */
+        @import url('https://fonts.googleapis.com/css2?family=DotGothic16&family=Kosugi+Maru&display=swap');
+
         :root {
-            /* 定義綠色系色調 */
             --primary-green: #004d40; /* 墨綠色 */
-            --accent-green: #2e7d32;  /* 森林綠 */
-            --light-green: #a5d6a7;   /* 淺綠色 */
-            --bg-color: #f1f8e9;      /* 極淺綠背景 */
+            --accent-green: #2e7d32;
+            --bg-color: #f1f8e9;
             --card-bg: #ffffff;
         }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            /* 預設使用 DotGothic16 */
+            font-family: 'DotGothic16', sans-serif;
             background-color: var(--bg-color);
             margin: 0;
             padding: 20px;
             color: #263238;
+            -webkit-font-smoothing: antialiased;
         }
-        .header { text-align: center; margin-bottom: 25px; }
+
         .header h1 { 
+            /* 標題專用 Kosugi Maru */
+            font-family: 'Kosugi Maru', sans-serif;
             color: var(--primary-green); 
-            font-weight: 800;
+            font-weight: 400;
             letter-spacing: 2px;
+            font-size: 2.5em;
+            margin-top: 40px;
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.05);
         }
-        
+
+        .header p {
+            font-family: 'DotGothic16', sans-serif;
+            color: var(--accent-green);
+            font-size: 0.9em;
+        }
+
         /* 篩選按鈕區塊 */
         .filter-container {
             display: flex;
@@ -38,23 +53,23 @@
             top: 15px;
             z-index: 100;
         }
+
         .filter-btn {
-            padding: 10px 22px;
+            font-family: 'DotGothic16', sans-serif; /* 按鈕也使用點陣體增加風格 */
+            padding: 8px 20px;
             background: white;
             border: 2px solid var(--primary-green);
-            border-radius: 25px;
+            border-radius: 4px; /* 配合點陣體，減少圓角，改用微方角更帥氣 */
             cursor: pointer;
-            font-size: 0.95em;
-            font-weight: 600;
+            font-size: 1em;
             color: var(--primary-green);
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: all 0.2s;
+            box-shadow: 3px 3px 0px var(--primary-green); /* 加上硬陰影 */
         }
-        /* 啟動狀態的通用樣式 */
+
         .filter-btn.active {
-            color: white;
-            transform: scale(1.05);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+            transform: translate(2px, 2px);
+            box-shadow: 0px 0px 0px var(--primary-green);
         }
 
         .dashboard {
@@ -64,69 +79,77 @@
             max-width: 1200px;
             margin: 0 auto;
         }
+
         .link-card {
             background: var(--card-bg);
-            border-radius: 16px;
+            border: 2px solid var(--primary-green); /* 增加邊框呼應點陣風格 */
+            border-radius: 4px;
             overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 6px 6px 0px rgba(0, 77, 64, 0.1);
+            transition: transform 0.2s;
             display: flex;
             flex-direction: column;
-            border-bottom: 4px solid var(--primary-green);
         }
+
         .link-card.hidden { display: none; }
-        
-        .link-card:hover { transform: translateY(-8px); }
-        .cover-img { width: 100%; height: 170px; object-fit: cover; background: #cfd8dc; }
+        .link-card:hover { transform: translate(-3px, -3px); box-shadow: 9px 9px 0px rgba(0, 77, 64, 0.15); }
+
+        .cover-img { width: 100%; height: 170px; object-fit: cover; filter: contrast(1.1); }
+
         .card-content { padding: 18px; flex-grow: 1; display: flex; flex-direction: column; }
-        .card-title { font-size: 1.05em; font-weight: 600; margin-bottom: 12px; height: 3em; overflow: hidden; color: #37474f; }
+        
+        .card-title { 
+            font-family: 'DotGothic16', sans-serif;
+            font-size: 1.1em; 
+            margin-bottom: 12px; 
+            height: 3em; 
+            overflow: hidden; 
+            color: #1a252b;
+            line-height: 1.4;
+        }
+
         .tag-badge { 
-            font-size: 0.75em; 
-            background: var(--bg-color); 
-            padding: 3px 10px; 
-            border-radius: 6px; 
+            font-size: 0.8em; 
+            background: #e8f5e9; 
+            padding: 2px 8px; 
+            border: 1px solid var(--primary-green);
+            border-radius: 0px; /* 點陣風格不建議用圓角 */
             margin-right: 6px;
             color: var(--primary-green);
-            font-weight: bold;
         }
+
         .btn {
+            font-family: 'DotGothic16', sans-serif;
             text-align: center;
-            padding: 12px;
+            padding: 10px;
             background: var(--primary-green);
             color: white;
             text-decoration: none;
-            border-radius: 8px;
-            font-size: 0.9em;
+            font-size: 1em;
             margin-top: auto;
-            transition: opacity 0.2s;
+            border: 1px solid var(--primary-green);
         }
-        .btn:hover { opacity: 0.9; }
+        
+        #status { font-family: 'DotGothic16', sans-serif; text-align: center; color: var(--primary-green); }
     </style>
 </head>
 <body>
 
     <div class="header">
         <h1>我的小幫手</h1>
+        <p>[ SYSTEM ONLINE / DATA SYNC EVERY HOUR ]</p>
     </div>
 
     <div id="filter-bar" class="filter-container">
         <button class="filter-btn active" style="background-color: #004d40; color: white;" onclick="filterContent('all', this)">全部</button>
     </div>
 
-    <div id="status">同步我的小幫手中...</div>
+    <div id="status">正在載入數據檔案...</div>
     <div id="dashboard" class="dashboard"></div>
 
     <script>
         let allItems = [];
-        // 不同層次的綠色陣列（包含墨綠色）
-        const greenShades = [
-            '#004d40', // 墨綠
-            '#00695c', 
-            '#2e7d32', // 森林綠
-            '#43a047', 
-            '#66bb6a', 
-            '#81c784'  // 淺綠
-        ];
+        const greenShades = ['#004d40', '#00695c', '#2e7d32', '#43a047', '#66bb6a'];
 
         async function init() {
             try {
@@ -134,34 +157,27 @@
                 const data = await response.json();
                 allItems = data.items;
                 document.getElementById('status').style.display = 'none';
-                
                 renderFilters(allItems);
                 renderCards(allItems);
             } catch (err) {
-                document.getElementById('status').innerText = '小幫手資料讀取失敗。';
+                document.getElementById('status').innerText = 'ERROR: DATA_LOAD_FAILED';
             }
         }
 
         function renderFilters(items) {
             const filterBar = document.getElementById('filter-bar');
             const tags = new Set();
-            items.forEach(item => {
-                if (item.tags) item.tags.forEach(t => tags.add(t));
-            });
+            items.forEach(item => { if (item.tags) item.tags.forEach(t => tags.add(t)); });
 
-            // 將標籤分配不同的綠色
             let colorIndex = 0;
             tags.forEach(tag => {
                 const btn = document.createElement('button');
                 btn.className = 'filter-btn';
                 btn.innerText = tag;
-                
-                // 分配顏色循環
                 const currentColor = greenShades[colorIndex % greenShades.length];
                 btn.dataset.color = currentColor;
                 btn.style.borderColor = currentColor;
                 btn.style.color = currentColor;
-
                 btn.onclick = () => filterContent(tag, btn);
                 filterBar.appendChild(btn);
                 colorIndex++;
@@ -175,15 +191,13 @@
                 const card = document.createElement('div');
                 card.className = 'link-card';
                 card.dataset.tags = JSON.stringify(item.tags || []);
-                
                 const tagHtml = (item.tags || []).map(t => `<span class="tag-badge">${t}</span>`).join('');
-                
                 card.innerHTML = `
-                    <img src="${item.cover || 'https://via.placeholder.com/300x160?text=No+Image'}" class="cover-img">
+                    <img src="${item.cover || 'https://via.placeholder.com/300x160?text=NO_IMAGE'}" class="cover-img">
                     <div class="card-content">
                         <div class="card-title">${item.title}</div>
                         <div style="margin-bottom:15px;">${tagHtml}</div>
-                        <a href="${item.link}" target="_blank" class="btn">立即前往</a>
+                        <a href="${item.link}" target="_blank" class="btn">GO_TO_SOURCE ></a>
                     </div>
                 `;
                 container.appendChild(card);
@@ -191,30 +205,26 @@
         }
 
         function filterContent(tag, btnEl) {
-            // 重置所有按鈕樣式（恢復空心）
             document.querySelectorAll('.filter-btn').forEach(b => {
                 b.classList.remove('active');
                 b.style.backgroundColor = 'white';
                 b.style.color = b.dataset.color || '#004d40';
+                b.style.transform = 'translate(0, 0)';
+                b.style.boxShadow = `3px 3px 0px ${b.dataset.color || '#004d40'}`;
             });
 
-            // 啟動當前按鈕（變為實心）
             btnEl.classList.add('active');
             const activeColor = btnEl.dataset.color || '#004d40';
             btnEl.style.backgroundColor = activeColor;
             btnEl.style.color = 'white';
+            btnEl.style.transform = 'translate(2px, 2px)';
+            btnEl.style.boxShadow = '0px 0px 0px transparent';
 
-            // 過濾卡片
             document.querySelectorAll('.link-card').forEach(card => {
                 const cardTags = JSON.parse(card.dataset.tags);
-                if (tag === 'all' || cardTags.includes(tag)) {
-                    card.classList.remove('hidden');
-                } else {
-                    card.classList.add('hidden');
-                }
+                (tag === 'all' || cardTags.includes(tag)) ? card.classList.remove('hidden') : card.classList.add('hidden');
             });
         }
-
         init();
     </script>
 </body>
