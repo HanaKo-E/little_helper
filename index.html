@@ -4,116 +4,89 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>我的小幫手</title>
-    <link rel="apple-touch-icon" href="icon.png">
-    <link rel="icon" type="image/png" href="icon.png">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-title" content="小幫手">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
         :root { --primary-green: #004d40; --bg-color: #f1f8e9; --card-bg: #ffffff; }
         body { font-family: 'Noto Sans TC', sans-serif; background-color: var(--bg-color); margin: 0; padding: 20px; color: #263238; -webkit-font-smoothing: antialiased; }
         
+        /* 基礎佈局與控制項 (保持不變) */
         .header { text-align: center; margin-bottom: 20px; }
         .header h1 { color: var(--primary-green); font-weight: 900; letter-spacing: 2px; }
-
         .controls-container { max-width: 800px; margin: 0 auto 20px; position: sticky; top: 10px; z-index: 101; display: flex; flex-direction: column; gap: 10px; }
         .search-bar-row { display: flex; gap: 10px; }
         #search-input { flex-grow: 1; padding: 12px 25px; border-radius: 30px; border: 2px solid var(--primary-green); font-size: 1em; outline: none; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        
         .mode-toggle { display: flex; background: #cfd8dc; border-radius: 20px; padding: 2px; }
-        .mode-btn { border: none; background: none; padding: 6px 12px; cursor: pointer; border-radius: 18px; font-size: 0.9em; transition: 0.3s; }
+        .mode-btn { border: none; background: none; padding: 6px 12px; cursor: pointer; border-radius: 18px; font-size: 0.9em; }
         .mode-btn.active { background: var(--primary-green); color: white; }
-
         .filter-container { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; position: sticky; top: 120px; z-index: 100; background: var(--bg-color); padding: 10px 0; }
-        .filter-btn { padding: 6px 16px; border-radius: 20px; cursor: pointer; font-size: 0.9em; font-weight: 500; transition: all 0.2s; border: 2px solid transparent; color: white; }
-        .filter-btn.active { background-color: white !important; border: 2px solid; color: inherit; transform: scale(1.05); }
+        .filter-btn { padding: 6px 16px; border-radius: 20px; cursor: pointer; font-size: 0.9em; color: white; border: 2px solid transparent; }
+        .filter-btn.active { background-color: white !important; border: 2px solid; color: inherit; }
 
-        .dashboard { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; }
-        
-        .link-card { background: var(--card-bg); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.06); display: flex; flex-direction: column; transition: transform 0.2s; height: 100%; }
-        .link-card:hover { transform: translateY(-3px); }
+        .dashboard { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; max-width: 1400px; margin: 0 auto; }
+        .link-card { background: var(--card-bg); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.06); display: flex; flex-direction: column; transition: 0.2s; height: 100%; }
         .cover-img { width: 100%; height: 150px; object-fit: cover; background: #eee; }
-        
         .card-content { padding: 18px; flex-grow: 1; display: flex; flex-direction: column; }
         .card-title { font-weight: 700; font-size: 1.05em; margin-bottom: 12px; color: #1a252b; }
         .tag-wrapper { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 15px; }
         .tag-badge { font-size: 10px; background: #e8f5e9; padding: 2px 8px; border-radius: 4px; color: var(--primary-green); font-weight: 500; cursor: pointer; }
-        
         .info-section { margin-top: 5px; font-size: 0.88em; line-height: 1.6; border-top: 1px solid #eee; padding-top: 12px; }
-        .map-link { color: #3498db; text-decoration: none; font-weight: 500; }
+        .btn { align-self: flex-end; margin-top: auto; width: 40px; height: 40px; background: var(--primary-green); color: white; text-decoration: none; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.2em; flex-shrink: 0; }
 
-        .btn { align-self: flex-end; margin-top: auto; width: 40px; height: 40px; background: var(--primary-green); color: white; text-decoration: none; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.2em; transition: 0.3s; box-shadow: 0 4px 8px rgba(0,0,0,0.1); flex-shrink: 0; }
-
-        /* --- 清單模式：高度統一 & 標題完整 --- */
-        .dashboard.list-mode { grid-template-columns: 1fr; gap: 10px; }
+        /* --- 清單模式：優化高度、字體與間距 --- */
+        .dashboard.list-mode { grid-template-columns: 1fr; gap: 8px; }
         .list-mode .link-card { 
             flex-direction: row; 
-            min-height: 80px; /* 統一高度基準線 */
-            padding: 10px 20px; 
+            min-height: 65px; /* 高度縮小 */
+            padding: 8px 24px; 
             align-items: center; 
         }
         .list-mode .cover-img { display: none; }
-        .list-mode .card-content { 
-            padding: 0; 
-            flex-direction: row; 
-            align-items: center; 
-            width: 100%; 
-            gap: 0; 
-        }
+        .list-mode .card-content { padding: 0; flex-direction: row; align-items: center; width: 100%; gap: 35px; /* 增加各大區塊間距 */ }
         
-        /* 標題：佔 22%，不使用 ellipsis 確保完整出現 */
+        /* 標題：稍微縮窄，讓出空間給右側 */
         .list-mode .card-title { 
             margin-bottom: 0; 
-            flex: 0 0 22%; 
-            min-width: 180px; 
-            padding-right: 20px; 
-            box-sizing: border-box; 
+            flex: 0 0 18%; 
+            min-width: 160px; 
             font-size: 0.95em;
-            line-height: 1.4;
         }
         
-        /* TAG：固定寬度佔 15% */
+        /* TAG：字體放大，寬度微調 */
         .list-mode .tag-wrapper { 
             margin-bottom: 0; 
-            flex: 0 0 15%; 
-            min-width: 130px; 
-            padding-right: 15px; 
-            box-sizing: border-box; 
+            flex: 0 0 16%; 
+            min-width: 140px; 
+        }
+        .list-mode .tag-badge {
+            font-size: 12px; /* 字體放大 */
+            padding: 3px 10px;
         }
         
-        /* 資訊區：垂直對齊 */
+        /* 資訊區：店名與地址間距拉大 */
         .list-mode .info-section { 
-            border-top: none; 
-            padding-top: 0; 
-            margin-top: 0; 
-            display: flex; 
-            flex: 1; 
-            align-items: center; 
+            border-top: none; padding-top: 0; margin-top: 0; 
+            display: flex; flex: 1; align-items: center; 
+            gap: 40px; /* 店名與地址的間距 */
         }
         
-        /* 店名與地址：固定寬度以達成垂直對齊 */
+        /* 店名：字體放大 */
         .list-mode .shop-name-item { 
-            flex: 0 0 160px; 
-            font-size: 0.85em; 
-            color: #546e7a; 
-            padding-right: 15px; 
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+            flex: 0 0 200px; /* 寬度增加 */
+            font-size: 0.95em; /* 字體放大 */
+            color: #455a64;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
         
+        /* 地址：佔用剩餘空間 */
         .list-mode .address-item { 
             flex: 1; 
-            font-size: 0.85em; 
-            padding-right: 15px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+            font-size: 0.9em; 
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
         
-        .list-mode .btn { margin-top: 0; margin-left: auto; width: 35px; height: 35px; }
+        .list-mode .btn { margin-top: 0; margin-left: 10px; width: 36px; height: 36px; }
 
-        #back-to-top { position: fixed; bottom: 25px; right: 25px; width: 45px; height: 45px; background: var(--primary-green); color: white; border-radius: 50%; display: none; justify-content: center; align-items: center; cursor: pointer; z-index: 1000; }
+        #back-to-top { position: fixed; bottom: 25px; right: 25px; width: 45px; height: 45px; background: var(--primary-green); color: white; border-radius: 50%; display: none; justify-content: center; align-items: center; z-index: 1000; }
     </style>
 </head>
 <body>
@@ -178,7 +151,7 @@
                     let addrHtml = addr ? `<div class="info-item address-item">📍 <a href="${mapUrl}" target="_blank" class="map-link">${addr}</a></div>` : `<div class="info-item address-item"></div>`;
                     infoHtml = `<div class="info-section">${nameHtml}${addrHtml}</div>`;
                 } else {
-                    infoHtml = `<div class="info-section" style="border:none; padding:0;"><div class="shop-name-item"></div><div class="address-item"></div></div>`;
+                    infoHtml = `<div class="info-section"><div class="shop-name-item"></div><div class="address-item"></div></div>`;
                 }
 
                 card.innerHTML = `<img src="${item.cover || 'https://via.placeholder.com/300x150'}" class="cover-img">
