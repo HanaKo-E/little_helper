@@ -17,12 +17,11 @@
         body { 
             font-family: 'Noto Sans TC', sans-serif; 
             background-color: var(--bg-color); 
-            margin: 0; padding: 20px; 
+            margin: 0; padding: 15px; 
             color: #263238; 
             -webkit-font-smoothing: antialiased; 
         }
         
-        /* 頁首與搜尋控制 */
         .header { text-align: center; margin-bottom: 20px; }
         .header h1 { color: var(--primary-green); font-weight: 900; letter-spacing: 2px; }
         
@@ -31,183 +30,144 @@
             position: sticky; top: 10px; z-index: 101; 
             display: flex; flex-direction: column; gap: 10px; 
         }
-        .search-bar-row { display: flex; gap: 10px; }
+        .search-bar-row { display: flex; gap: 8px; }
         #search-input { 
-            flex-grow: 1; padding: 12px 25px; border-radius: 30px; 
-            border: 2px solid var(--primary-green); font-size: 1em; outline: none; 
+            flex-grow: 1; padding: 12px 20px; border-radius: 30px; 
+            border: 2px solid var(--primary-green); font-size: 16px; outline: none; 
             box-shadow: 0 4px 10px rgba(0,0,0,0.05); 
         }
         
         .mode-toggle { display: flex; background: #cfd8dc; border-radius: 20px; padding: 2px; }
-        .mode-btn { border: none; background: none; padding: 6px 12px; cursor: pointer; border-radius: 18px; font-size: 0.9em; }
+        .mode-btn { border: none; background: none; padding: 6px 10px; cursor: pointer; border-radius: 18px; font-size: 14px; }
         .mode-btn.active { background: var(--primary-green); color: white; }
 
-        /* 分類按鈕容器 */
         .filter-container { 
             display: flex; justify-content: center; flex-wrap: wrap; 
-            gap: 8px; margin-bottom: 20px; 
-            position: sticky; top: 120px; z-index: 100; 
+            gap: 6px; margin-bottom: 20px; 
+            position: sticky; top: 110px; z-index: 100; 
             background: var(--bg-color); padding: 10px 0; 
         }
         .filter-btn { 
-            padding: 8px 18px; border-radius: 20px; cursor: pointer; 
-            font-size: 0.95em; border: 2px solid transparent; 
-            transition: all 0.2s; font-weight: 500;
+            padding: 6px 14px; border-radius: 20px; cursor: pointer; 
+            font-size: 13px; border: none; color: white; font-weight: 500;
         }
 
-        /* 儀表板佈局 */
         .dashboard { 
             display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
-            gap: 20px; max-width: 1400px; margin: 0 auto; 
+            gap: 15px; max-width: 1400px; margin: 0 auto; 
         }
 
-        /* 卡片樣式 (Grid Mode) */
         .link-card { 
             background: var(--card-bg); border-radius: 12px; overflow: hidden; 
             box-shadow: 0 4px 12px rgba(0,0,0,0.06); 
-            display: flex; flex-direction: column; transition: 0.2s; height: 100%; 
+            display: flex; flex-direction: column; height: 100%; 
         }
-        .cover-img { width: 100%; height: 150px; object-fit: cover; background: #eee; }
-        .card-content { padding: 18px; flex-grow: 1; display: flex; flex-direction: column; }
-        .card-title { font-weight: 700; font-size: 1.05em; margin-bottom: 8px; color: #1a252b; line-height: 1.4; }
+        .cover-img { width: 100%; height: 140px; object-fit: cover; background: #eee; border:none; }
+        .card-content { padding: 15px; flex-grow: 1; display: flex; flex-direction: column; }
+        .card-title { font-weight: 700; font-size: 1.05em; margin-bottom: 8px; color: #1a252b; }
         
-        .tag-wrapper { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
-        .tag-badge { 
-            font-size: 10px; background: #e8f5e9; padding: 2px 8px; 
-            border-radius: 4px; color: var(--primary-green); font-weight: 500; cursor: pointer; 
-        }
+        .tag-wrapper { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+        .tag-badge { font-size: 10px; background: #e8f5e9; padding: 2px 8px; border-radius: 4px; color: var(--primary-green); }
         
-        .info-section { margin-top: 5px; font-size: 0.88em; line-height: 1.6; border-top: 1px solid #eee; padding-top: 10px; }
-        .info-item { margin-bottom: 4px; display: flex; align-items: flex-start; gap: 6px; }
+        .info-section { margin-top: 5px; font-size: 0.85em; border-top: 1px solid #eee; padding-top: 8px; }
+        .map-link { color: var(--map-blue); text-decoration: none !important; }
         
-        /* 徹底移除底線 */
-        .map-link { color: var(--map-blue); text-decoration: none !important; font-weight: 500; }
-        .map-link:hover { text-decoration: none !important; opacity: 0.8; }
-        
-        /* 備註：非斜體，維持色值與大小 */
-        .note-text { color: #78909c; font-style: normal; font-size: 0.9em; margin-top: 5px; }
-
         .btn { 
-            align-self: flex-end; margin-top: auto; width: 40px; height: 40px; 
+            align-self: flex-end; width: 40px; height: 40px; 
             background: var(--primary-green); color: white; text-decoration: none; 
             border-radius: 50%; display: flex; justify-content: center; align-items: center; 
-            font-size: 1.2em; flex-shrink: 0; 
+            font-size: 1.2em; flex-shrink: 0; margin-top: 10px;
         }
 
-        /* --- 清單模式 (List Mode) --- */
+        /* --- 清單模式：移動端優化版 --- */
         .dashboard.list-mode { grid-template-columns: 1fr; gap: 8px; }
-        .list-mode .link-card { flex-direction: row; min-height: 60px; padding: 8px 24px; align-items: center; }
+        .list-mode .link-card { flex-direction: row; padding: 10px 15px; align-items: center; }
         .list-mode .cover-img { display: none; }
-        .list-mode .card-content { padding: 0; flex-direction: row; align-items: center; width: 100%; gap: 30px; }
+        .list-mode .card-content { padding: 0; flex-direction: row; align-items: center; width: 100%; gap: 10px; flex-wrap: wrap; }
         
-        .list-mode .card-title { margin-bottom: 0; flex: 0 0 18%; min-width: 160px; }
-        .list-mode .tag-wrapper { margin-bottom: 0; flex: 0 0 14%; min-width: 125px; }
-        .list-mode .tag-badge { font-size: 12px; padding: 3px 10px; }
+        .list-mode .card-title { margin-bottom: 0; flex: 0 0 150px; }
+        .list-mode .tag-wrapper { margin-bottom: 0; flex: 0 0 100px; }
+        .list-mode .info-section { border-top: none; padding-top: 0; margin-top: 0; display: flex; flex: 1; min-width: 200px; }
         
-        .list-mode .info-section { border-top: none; padding-top: 0; margin-top: 0; display: flex; flex: 1; align-items: center; gap: 0; }
-        
-        /* 店名寬度拉長，地址右移 */
-        .list-mode .shop-name-item { 
-            flex: 0 0 280px; font-size: 0.95em; font-weight: 600; color: #455a64; 
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 20px; 
+        /* 桌面版保持地址向右推 */
+        @media (min-width: 768px) {
+            .list-mode .shop-name-item { flex: 0 0 280px; padding-right: 20px; }
+            .list-mode .address-item { flex: 1; }
         }
-        .list-mode .address-item { flex: 1; font-size: 0.9em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        
-        /* 清單中隱藏 Note */
-        .list-mode .note-text { display: none; }
-        .list-mode .btn { margin-top: 0; margin-left: 20px; width: 36px; height: 36px; }
 
-        #back-to-top { 
-            position: fixed; bottom: 25px; right: 25px; width: 45px; height: 45px; 
-            background: var(--primary-green); color: white; border-radius: 50%; 
-            display: none; justify-content: center; align-items: center; z-index: 1000; cursor: pointer;
+        /* 手機版：取消硬性寬度，防止按鈕被擠出螢幕 */
+        @media (max-width: 767px) {
+            .list-mode .link-card { flex-direction: column; align-items: flex-start; padding: 15px; }
+            .list-mode .card-content { flex-direction: column; align-items: flex-start; gap: 5px; }
+            .list-mode .info-section { flex-direction: column; width: 100%; }
+            .list-mode .btn { position: absolute; right: 15px; bottom: 15px; }
+            .list-mode .card-title { flex: none; width: 100%; font-size: 1.1em; }
         }
+
+        #back-to-top { position: fixed; bottom: 20px; right: 20px; width: 40px; height: 40px; background: var(--primary-green); color: white; border-radius: 50%; display: none; justify-content: center; align-items: center; z-index: 1000; }
     </style>
 </head>
 <body>
-
     <div class="header"><h1>我的小幫手</h1></div>
-
     <div class="controls-container">
         <div class="search-bar-row">
-            <input type="text" id="search-input" placeholder="🔍 搜尋店名、地址或標籤..." onkeyup="handleSearch()">
+            <input type="text" id="search-input" placeholder="🔍 搜尋..." onkeyup="handleSearch()">
             <div class="mode-toggle">
                 <button id="grid-btn" class="mode-btn active" onclick="setMode('grid')">卡片</button>
                 <button id="list-btn" class="mode-btn" onclick="setMode('list')">清單</button>
             </div>
-            <button style="background:#cfd8dc; border:none; padding:0 15px; border-radius:20px; cursor:pointer;" onclick="clearSearch()">✕</button>
         </div>
     </div>
-
     <div id="filter-bar" class="filter-container"></div>
-
-    <div id="status" style="text-align:center; padding: 20px;">資料載入中...</div>
+    <div id="status" style="text-align:center;">載入中...</div>
     <div id="dashboard" class="dashboard"></div>
-
     <div id="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">▲</div>
 
     <script>
         let allItems = [];
-        // 9 個特定色階
-        const customColors = [
-            '#31483c', '#3e564b', '#4b645a', '#587269', 
-            '#658078', '#728e87', '#7f9c96', '#8caaa5', '#99b9b4'
-        ];
+        const customColors = ['#31483c', '#3e564b', '#4b645a', '#587269', '#658078', '#728e87', '#7f9c96', '#8caaa5', '#99b9b4'];
 
         async function init() {
             try {
-                const response = await fetch('./data.json?t=' + new Date().getTime());
+                const response = await fetch('./data.json?v=' + new Date().getTime());
                 const data = await response.json();
-                allItems = data.items;
+                allItems = data.items || [];
                 document.getElementById('status').style.display = 'none';
                 renderFilters(allItems);
                 renderCards(allItems);
+                console.log("成功載入書籤總數:", allItems.length);
             } catch (err) {
-                document.getElementById('status').innerText = '讀取失敗。';
+                document.getElementById('status').innerHTML = "資料讀取錯誤，請檢查 JSON 格式。<br><small>" + err + "</small>";
             }
         }
 
-        // --- 分類按鈕與指定色階邏輯 ---
         function renderFilters(items) {
             const filterBar = document.getElementById('filter-bar');
-            const primaryTags = new Set();
-            items.forEach(item => { if (item.tags && item.tags.length > 0) primaryTags.add(item.tags[0]); });
-            
-            const tagArray = Array.from(primaryTags);
+            const primaryTags = [...new Set(items.map(item => item.tags ? item.tags[0] : null).filter(t => t))];
             filterBar.innerHTML = ''; 
 
-            // 建立全部按鈕
             const btnAll = document.createElement('button');
             btnAll.className = 'filter-btn active';
             btnAll.innerText = '全部';
             btnAll.onclick = () => filterContent('all', btnAll);
             filterBar.appendChild(btnAll);
 
-            // 建立其他標籤
-            tagArray.forEach((tag) => {
+            primaryTags.forEach(tag => {
                 const btn = document.createElement('button');
                 btn.className = 'filter-btn';
                 btn.innerText = tag;
                 btn.onclick = () => filterContent(tag, btn);
                 filterBar.appendChild(btn);
             });
-
             updateFilterStyles();
         }
 
         function updateFilterStyles() {
-            const btns = document.querySelectorAll('.filter-btn');
-            btns.forEach((btn, index) => {
+            document.querySelectorAll('.filter-btn').forEach((btn, i) => {
                 if (btn.classList.contains('active')) {
-                    btn.style.backgroundColor = 'white';
-                    btn.style.color = '#31483c';
-                    btn.style.borderColor = '#31483c';
+                    btn.style.backgroundColor = 'white'; btn.style.color = '#31483c'; btn.style.boxShadow = "inset 0 0 0 2px #31483c";
                 } else {
-                    const colorIndex = index % customColors.length;
-                    const targetColor = customColors[colorIndex];
-                    btn.style.backgroundColor = targetColor;
-                    btn.style.color = 'white'; // 強制白色字
-                    btn.style.borderColor = 'transparent';
+                    btn.style.backgroundColor = customColors[i % customColors.length]; btn.style.color = 'white'; btn.style.boxShadow = "none";
                 }
             });
         }
@@ -216,48 +176,42 @@
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             btnEl.classList.add('active');
             updateFilterStyles();
-
-            const query = tag.toLowerCase();
             document.querySelectorAll('.link-card').forEach(card => {
-                const cardTag = (card.dataset.primaryTag || "").toLowerCase();
-                card.style.display = (tag === 'all' || cardTag === query) ? "" : "none";
+                card.style.display = (tag === 'all' || card.dataset.tag === tag) ? "" : "none";
             });
         }
 
-        // --- 卡片渲染邏輯 ---
         function renderCards(items) {
             const container = document.getElementById('dashboard');
             container.innerHTML = '';
-            items.forEach(item => {
-                const card = document.createElement('div');
-                card.className = 'link-card';
-                card.dataset.primaryTag = (item.tags && item.tags.length > 0) ? item.tags[0] : "";
-                card.dataset.fulltext = (item.title + (item.note || "") + (item.tags || []).join(" ")).toLowerCase();
-                
-                const tagHtml = (item.tags || []).map(t => `<span class="tag-badge" onclick="quickSearch('${t}')">${t}</span>`).join('');
-                
-                let name = ""; let addr = ""; let extraNote = "";
-                if (item.note && item.note.includes('|')) {
-                    const parts = item.note.split('|').map(p => p.trim());
-                    name = parts[0]; addr = parts[1]; extraNote = parts[2] || "";
-                } else {
-                    extraNote = item.note || "";
-                }
+            items.forEach((item, index) => {
+                try {
+                    const card = document.createElement('div');
+                    card.className = 'link-card';
+                    card.dataset.tag = item.tags ? item.tags[0] : "";
+                    card.dataset.fulltext = (item.title + (item.note || "")).toLowerCase();
+                    
+                    const tags = (item.tags || []).map(t => `<span class="tag-badge">${t}</span>`).join('');
+                    const noteParts = (item.note || "").split('|').map(p => p.trim());
+                    const shopName = noteParts[0] || "";
+                    const address = noteParts[1] || "";
+                    
+                    // 強制圖片刷新
+                    const imgUrl = item.cover ? `${item.cover}?v=${index}` : 'https://via.placeholder.com/300x150?text=No+Image';
 
-                const mapUrl = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(addr || name);
-                let nameHtml = name ? `<div class="info-item shop-name-item">🏠 ${name}</div>` : `<div class="info-item shop-name-item"></div>`;
-                let addrHtml = addr ? `<div class="info-item address-item">📍 <a href="${mapUrl}" target="_blank" class="map-link">${addr}</a></div>` : `<div class="info-item address-item"></div>`;
-                let noteHtml = extraNote ? `<div class="note-text">💡 ${extraNote}</div>` : '';
-
-                card.innerHTML = `
-                    <img src="${item.cover || 'https://via.placeholder.com/300x150'}" class="cover-img">
-                    <div class="card-content">
-                        <div class="card-title">${item.title}</div>
-                        <div class="tag-wrapper">${tagHtml}</div>
-                        <div class="info-section">${nameHtml}${addrHtml}${noteHtml}</div>
-                        <a href="${item.link}" target="_blank" class="btn">➜</a>
-                    </div>`;
-                container.appendChild(card);
+                    card.innerHTML = `
+                        <img src="${imgUrl}" class="cover-img" onerror="this.src='https://via.placeholder.com/300x150?text=Image+Error';">
+                        <div class="card-content">
+                            <div class="card-title">${item.title}</div>
+                            <div class="tag-wrapper">${tags}</div>
+                            <div class="info-section">
+                                <div class="shop-name-item">🏠 ${shopName}</div>
+                                <div class="address-item">📍 <a href="https://www.google.com/maps/search/${encodeURIComponent(address || shopName)}" target="_blank" class="map-link">${address}</a></div>
+                            </div>
+                            <a href="${item.link}" target="_blank" class="btn">➜</a>
+                        </div>`;
+                    container.appendChild(card);
+                } catch (e) { console.error("渲染第 " + index + " 個項目時出錯:", e); }
             });
         }
 
@@ -265,31 +219,16 @@
             const d = document.getElementById('dashboard');
             const gBtn = document.getElementById('grid-btn');
             const lBtn = document.getElementById('list-btn');
-            if (mode === 'list') {
-                d.classList.add('list-mode'); lBtn.classList.add('active'); gBtn.classList.remove('active');
-            } else {
-                d.classList.remove('list-mode'); gBtn.classList.add('active'); lBtn.classList.remove('active');
-            }
+            if (mode === 'list') { d.classList.add('list-mode'); lBtn.classList.add('active'); gBtn.classList.remove('active'); }
+            else { d.classList.remove('list-mode'); gBtn.classList.add('active'); lBtn.classList.remove('active'); }
         }
 
         function handleSearch() {
-            const query = document.getElementById('search-input').value.toLowerCase();
+            const q = document.getElementById('search-input').value.toLowerCase();
             document.querySelectorAll('.link-card').forEach(card => {
-                card.style.display = card.dataset.fulltext.includes(query) ? "" : "none";
+                card.style.display = card.dataset.fulltext.includes(q) ? "" : "none";
             });
         }
-
-        function quickSearch(tagName) {
-            document.getElementById('search-input').value = tagName; handleSearch();
-        }
-
-        function clearSearch() {
-            document.getElementById('search-input').value = ''; handleSearch();
-        }
-
-        window.onscroll = function() {
-            document.getElementById('back-to-top').style.display = (document.documentElement.scrollTop > 400) ? "flex" : "none";
-        };
 
         init();
     </script>
