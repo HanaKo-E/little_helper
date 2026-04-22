@@ -44,28 +44,74 @@
 
         .btn { align-self: flex-end; margin-top: auto; width: 40px; height: 40px; background: var(--primary-green); color: white; text-decoration: none; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.2em; transition: 0.3s; box-shadow: 0 4px 8px rgba(0,0,0,0.1); flex-shrink: 0; }
 
-        /* --- 清單模式：極致垂直對齊優化 --- */
-        .dashboard.list-mode { grid-template-columns: 1fr; gap: 8px; }
-        .list-mode .link-card { flex-direction: row; height: auto; padding: 10px 20px; align-items: center; }
+        /* --- 清單模式：高度統一 & 標題完整 --- */
+        .dashboard.list-mode { grid-template-columns: 1fr; gap: 10px; }
+        .list-mode .link-card { 
+            flex-direction: row; 
+            min-height: 80px; /* 統一高度基準線 */
+            padding: 10px 20px; 
+            align-items: center; 
+        }
         .list-mode .cover-img { display: none; }
-        .list-mode .card-content { padding: 0; flex-direction: row; align-items: center; width: 100%; gap: 0; }
+        .list-mode .card-content { 
+            padding: 0; 
+            flex-direction: row; 
+            align-items: center; 
+            width: 100%; 
+            gap: 0; 
+        }
         
-        /* 標題：佔 20% */
-        .list-mode .card-title { margin-bottom: 0; flex: 0 0 20%; min-width: 150px; padding-right: 15px; box-sizing: border-box; }
+        /* 標題：佔 22%，不使用 ellipsis 確保完整出現 */
+        .list-mode .card-title { 
+            margin-bottom: 0; 
+            flex: 0 0 22%; 
+            min-width: 180px; 
+            padding-right: 20px; 
+            box-sizing: border-box; 
+            font-size: 0.95em;
+            line-height: 1.4;
+        }
         
-        /* TAG：因為不超過4個，精簡寬度佔 15% */
-        .list-mode .tag-wrapper { margin-bottom: 0; flex: 0 0 15%; min-width: 130px; padding-right: 15px; box-sizing: border-box; }
+        /* TAG：固定寬度佔 15% */
+        .list-mode .tag-wrapper { 
+            margin-bottom: 0; 
+            flex: 0 0 15%; 
+            min-width: 130px; 
+            padding-right: 15px; 
+            box-sizing: border-box; 
+        }
         
-        /* 資訊區：強制店名與地址對齊 */
-        .list-mode .info-section { border-top: none; padding-top: 0; margin-top: 0; display: flex; flex: 1; align-items: center; gap: 0; }
+        /* 資訊區：垂直對齊 */
+        .list-mode .info-section { 
+            border-top: none; 
+            padding-top: 0; 
+            margin-top: 0; 
+            display: flex; 
+            flex: 1; 
+            align-items: center; 
+        }
         
-        /* 店名：固定對齊起點 */
-        .list-mode .shop-name-item { flex: 0 0 180px; font-size: 0.85em; color: #546e7a; padding-right: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        /* 店名與地址：固定寬度以達成垂直對齊 */
+        .list-mode .shop-name-item { 
+            flex: 0 0 160px; 
+            font-size: 0.85em; 
+            color: #546e7a; 
+            padding-right: 15px; 
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
         
-        /* 地址：固定對齊起點 */
-        .list-mode .address-item { flex: 1; font-size: 0.85em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .list-mode .address-item { 
+            flex: 1; 
+            font-size: 0.85em; 
+            padding-right: 15px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
         
-        .list-mode .btn { margin-top: 0; margin-left: 20px; width: 35px; height: 35px; }
+        .list-mode .btn { margin-top: 0; margin-left: auto; width: 35px; height: 35px; }
 
         #back-to-top { position: fixed; bottom: 25px; right: 25px; width: 45px; height: 45px; background: var(--primary-green); color: white; border-radius: 50%; display: none; justify-content: center; align-items: center; cursor: pointer; z-index: 1000; }
     </style>
@@ -128,15 +174,10 @@
                     const parts = item.note.split('|').map(p => p.trim());
                     const name = parts[0]; const addr = parts[1];
                     const mapUrl = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(addr || name);
-                    
-                    // 清單模式下，我們需要標註不同的 class 方便對齊
                     let nameHtml = name ? `<div class="info-item shop-name-item"><b>店名：</b>${name}</div>` : `<div class="info-item shop-name-item"></div>`;
                     let addrHtml = addr ? `<div class="info-item address-item">📍 <a href="${mapUrl}" target="_blank" class="map-link">${addr}</a></div>` : `<div class="info-item address-item"></div>`;
-                    
-                    if (name || addr) { infoHtml = `<div class="info-section">${nameHtml}${addrHtml}</div>`; }
-                    else { infoHtml = `<div class="info-section"><div class="shop-name-item"></div><div class="address-item"></div></div>`; }
+                    infoHtml = `<div class="info-section">${nameHtml}${addrHtml}</div>`;
                 } else {
-                    // 確保沒有 note 的項目也有空的容器佔位，保持對齊
                     infoHtml = `<div class="info-section" style="border:none; padding:0;"><div class="shop-name-item"></div><div class="address-item"></div></div>`;
                 }
 
