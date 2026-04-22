@@ -3,40 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的小幫手 v4.5</title>
+    <title>我的小幫手 v5.1</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
         :root { --primary-green: #004d40; --bg-color: #f1f8e9; --card-bg: #ffffff; }
         body { font-family: 'Noto Sans TC', sans-serif; background-color: var(--bg-color); margin: 0; padding: 20px; color: #263238; -webkit-font-smoothing: antialiased; }
-        .header { text-align: center; margin-bottom: 30px; }
+        
+        .header { text-align: center; margin-bottom: 20px; }
         .header h1 { color: var(--primary-green); font-weight: 900; letter-spacing: 2px; }
-        .filter-container { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-bottom: 35px; position: sticky; top: 15px; z-index: 100; }
-        .filter-btn { padding: 8px 20px; border-radius: 25px; cursor: pointer; font-size: 0.95em; font-weight: 500; transition: all 0.2s ease; border: 2px solid transparent; box-shadow: 0 4px 6px rgba(0,0,0,0.1); color: white; }
+
+        .search-container { max-width: 600px; margin: 0 auto 20px; position: sticky; top: 10px; z-index: 101; }
+        #search-input { 
+            width: 100%; padding: 12px 25px; border-radius: 30px; border: 2px solid var(--primary-green);
+            font-family: inherit; font-size: 1em; box-shadow: 0 4px 10px rgba(0,0,0,0.1); outline: none;
+        }
+
+        .filter-container { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin-bottom: 30px; position: sticky; top: 70px; z-index: 100; background: var(--bg-color); padding: 10px 0; }
+        .filter-btn { padding: 6px 16px; border-radius: 20px; cursor: pointer; font-size: 0.9em; font-weight: 500; transition: all 0.2s; border: 2px solid transparent; color: white; }
         .filter-btn.active { background-color: white !important; border: 2px solid; color: inherit; transform: scale(1.05); }
-        .dashboard { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; max-width: 1200px; margin: 0 auto; }
-        .link-card { background: var(--card-bg); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.06); display: flex; flex-direction: column; transition: transform 0.3s; }
+
+        .dashboard { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; }
+        .link-card { background: var(--card-bg); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.06); display: flex; flex-direction: column; transition: transform 0.3s; }
         .link-card:hover { transform: translateY(-5px); }
-        .cover-img { width: 100%; height: 160px; object-fit: cover; }
-        .card-content { padding: 18px; flex-grow: 1; display: flex; flex-direction: column; }
-        .card-title { font-weight: 700; font-size: 1.1em; margin-bottom: 12px; color: #1a252b; }
-        .tag-badge { font-size: 0.75em; background: #e8f5e9; padding: 2px 8px; border-radius: 4px; margin-right: 6px; color: var(--primary-green); }
+        .cover-img { width: 100%; height: 150px; object-fit: cover; background: #eee; }
+        .card-content { padding: 15px; flex-grow: 1; display: flex; flex-direction: column; }
+        .card-title { font-weight: 700; font-size: 1em; margin-bottom: 10px; color: #1a252b; min-height: 2.8em; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
         
-        /* 資訊區塊樣式 */
-        .info-section { margin-top: 12px; font-size: 0.88em; line-height: 1.6; border-top: 1px dashed #ddd; padding-top: 10px; }
-        .info-label { color: var(--primary-green); font-weight: bold; margin-right: 5px; }
-        .map-link { color: #3498db; text-decoration: none; font-weight: 500; }
-        .note-text { color: #666; font-style: italic; }
+        .info-section { margin-top: 10px; font-size: 0.85em; line-height: 1.5; border-top: 1px solid #eee; padding-top: 10px; }
+        .info-item { margin-bottom: 4px; }
+        .info-label { color: var(--primary-green); font-weight: bold; margin-right: 4px; }
+        .map-link { color: #3498db; text-decoration: none; border-bottom: 1px solid #3498db; }
         
-        .btn { text-align: center; padding: 12px; background: var(--primary-green); color: white; text-decoration: none; border-radius: 8px; font-size: 0.9em; font-weight: 700; margin-top: 15px; }
+        .btn { text-align: center; padding: 10px; background: var(--primary-green); color: white; text-decoration: none; border-radius: 8px; font-size: 0.9em; font-weight: 700; margin-top: auto; }
+
+        #back-to-top {
+            position: fixed; bottom: 25px; right: 25px; width: 45px; height: 45px; background: var(--primary-green);
+            color: white; border-radius: 50%; display: none; justify-content: center; align-items: center;
+            cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index: 1000; font-size: 20px;
+        }
     </style>
 </head>
 <body>
     <div class="header"><h1>我的小幫手</h1></div>
+
+    <div class="search-container">
+        <input type="text" id="search-input" placeholder="🔍 搜尋店名、地址或標籤 (如：日本)..." onkeyup="handleSearch()">
+    </div>
+
     <div id="filter-bar" class="filter-container">
         <button id="btn-all" class="filter-btn active" style="background-color: white; color: #004d40; border-color: #004d40;" onclick="filterContent('all', this)">全部</button>
     </div>
-    <div id="status" style="text-align:center;">同步中...</div>
+
+    <div id="status" style="text-align:center; padding: 20px;">載入中...</div>
     <div id="dashboard" class="dashboard"></div>
+
+    <div id="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">▲</div>
 
     <script>
         let allItems = [];
@@ -55,10 +76,17 @@
 
         function renderFilters(items) {
             const filterBar = document.getElementById('filter-bar');
-            const tags = new Set();
-            items.forEach(item => { if (item.tags) item.tags.forEach(t => tags.add(t)); });
+            const primaryTags = new Set();
+            
+            // 只抓取第一個標籤作為分類按鈕
+            items.forEach(item => { 
+                if (item.tags && item.tags.length > 0) {
+                    primaryTags.add(item.tags[0]); 
+                }
+            });
+
             let colorIndex = 0;
-            tags.forEach(tag => {
+            primaryTags.forEach(tag => {
                 const btn = document.createElement('button');
                 btn.className = 'filter-btn';
                 btn.innerText = tag;
@@ -77,64 +105,77 @@
             items.forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'link-card';
-                card.dataset.tags = JSON.stringify(item.tags || []);
-                const tagHtml = (item.tags || []).map(t => `<span class="tag-badge">${t}</span>`).join('');
                 
-                // --- 核心邏輯：解析筆記內容 ---
+                // 分類邏輯：依據第一個標籤
+                const primaryTag = (item.tags && item.tags.length > 0) ? item.tags[0] : "";
+                card.dataset.primaryTag = primaryTag;
+                
+                // 搜尋索引：包含標題、筆記、以及所有標籤
+                const allTagsText = (item.tags || []).join(" ");
+                card.dataset.fulltext = (item.title + (item.note || "") + allTagsText).toLowerCase();
+                
+                const tagHtml = (item.tags || []).map(t => `<span style="font-size:10px; background:#e8f5e9; padding:2px 6px; border-radius:4px; margin-right:4px; color:var(--primary-green); font-weight:500;">${t}</span>`).join('');
+                
                 let infoHtml = '';
-                if (item.note && item.note.trim() !== "") {
-                    // 使用 "|" 分隔字串
+                if (item.note && item.note.includes('|')) {
                     const parts = item.note.split('|').map(p => p.trim());
-                    const storeName = parts[0] || "未設定店名";
-                    const address = parts[1] || "";
+                    const name = parts[0] || "";
+                    const addr = parts[1] || "";
                     const remark = parts[2] || "";
+                    const mapUrl = addr ? "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(addr) : "#";
 
-                    let addressSection = '';
-                    if (address) {
-                        const mapUrl = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(address);
-                        addressSection = `<div><span class="info-label">地址：</span><a href="${mapUrl}" target="_blank" class="map-link">${address}</a></div>`;
+                    // 只有當欄位有內容時才顯示
+                    const nameRow = name ? `<div class="info-item"><span class="info-label">店名：</span>${name}</div>` : '';
+                    const addrRow = addr ? `<div class="info-item"><span class="info-label">地址：</span><a href="${mapUrl}" target="_blank" class="map-link">${addr}</a></div>` : '';
+                    const remarkRow = remark ? `<div style="margin-top:4px; color:#555; font-size:0.95em;"><span class="info-label">Note：</span>${remark}</div>` : '';
+
+                    if (name || addr || remark) {
+                        infoHtml = `<div class="info-section">${nameRow}${addrRow}${remarkRow}</div>`;
                     }
-
-                    let remarkSection = remark ? `<div><span class="info-label">Note：</span><span class="note-text">${remark}</span></div>` : '';
-
-                    infoHtml = `
-                        <div class="info-section">
-                            <div><span class="info-label">店名：</span>${storeName}</div>
-                            ${addressSection}
-                            ${remarkSection}
-                        </div>`;
                 }
 
                 card.innerHTML = `
-                    <img src="${item.cover || 'https://via.placeholder.com/300x160'}" class="cover-img">
+                    <img src="${item.cover || 'https://via.placeholder.com/300x150'}" class="cover-img">
                     <div class="card-content">
                         <div class="card-title">${item.title}</div>
-                        <div>${tagHtml}</div>
+                        <div style="margin-bottom:5px;">${tagHtml}</div>
                         ${infoHtml}
-                        <a href="${item.link}" target="_blank" class="btn">立即前往</a>
+                        <a href="${item.link}" target="_blank" class="btn" style="margin-top:15px;">立即前往</a>
                     </div>`;
                 container.appendChild(card);
+            });
+        }
+
+        function handleSearch() {
+            const query = document.getElementById('search-input').value.toLowerCase();
+            document.querySelectorAll('.link-card').forEach(card => {
+                const text = card.dataset.fulltext;
+                card.style.display = text.includes(query) ? "" : "none";
             });
         }
 
         function filterContent(tag, btnEl) {
             document.querySelectorAll('.filter-btn').forEach(b => {
                 b.classList.remove('active');
-                const originalColor = b.dataset.color || '#004d40';
-                b.style.backgroundColor = originalColor;
+                b.style.backgroundColor = b.dataset.color || '#004d40';
                 b.style.color = 'white';
-                b.style.borderColor = 'transparent';
             });
             btnEl.classList.add('active');
-            const activeColor = btnEl.dataset.color || '#004d40';
             btnEl.style.backgroundColor = 'white';
-            btnEl.style.color = activeColor;
-            btnEl.style.borderColor = activeColor;
+            btnEl.style.color = btnEl.dataset.color || '#004d40';
+            btnEl.style.borderColor = btnEl.dataset.color || '#004d40';
+
             document.querySelectorAll('.link-card').forEach(card => {
-                const cardTags = JSON.parse(card.dataset.tags);
-                (tag === 'all' || cardTags.includes(tag)) ? card.style.display = "" : card.style.display = "none";
+                const cardPrimaryTag = card.dataset.primaryTag;
+                card.style.display = (tag === 'all' || cardPrimaryTag === tag) ? "" : "none";
             });
         }
+
+        window.onscroll = function() {
+            const btn = document.getElementById('back-to-top');
+            btn.style.display = (document.body.scrollTop > 400 || document.documentElement.scrollTop > 400) ? "flex" : "none";
+        };
+
         init();
     </script>
 </body>
