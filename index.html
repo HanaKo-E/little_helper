@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的小幫手 v5.4</title>
+    <title>我的小幫手 v5.6</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
         :root { --primary-green: #004d40; --bg-color: #f1f8e9; --card-bg: #ffffff; }
@@ -13,7 +13,7 @@
         .header { text-align: center; margin-bottom: 20px; }
         .header h1 { color: var(--primary-green); font-weight: 900; letter-spacing: 2px; }
 
-        /* 搜尋列優化 */
+        /* 搜尋列 */
         .search-container { max-width: 600px; margin: 0 auto 20px; position: sticky; top: 10px; z-index: 101; display: flex; gap: 10px; }
         #search-input { 
             flex-grow: 1; padding: 12px 25px; border-radius: 30px; border: 2px solid var(--primary-green);
@@ -38,19 +38,19 @@
         .card-content { padding: 18px; flex-grow: 1; display: flex; flex-direction: column; }
         .card-title { font-weight: 700; font-size: 1.05em; margin-bottom: 12px; color: #1a252b; line-height: 1.4; }
         
-        /* 統一標籤按鈕樣式 */
+        /* 回歸最初的淺綠色樣式 */
         .tag-wrapper { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 15px; }
         .tag-badge { 
-            font-size: 0.75em; background: var(--primary-green); color: white; 
-            padding: 3px 10px; border-radius: 15px; font-weight: 500; cursor: pointer; transition: opacity 0.2s;
+            font-size: 10px; background: #e8f5e9; padding: 2px 8px; border-radius: 4px; 
+            color: var(--primary-green); font-weight: 500; cursor: pointer; transition: background 0.2s;
         }
-        .tag-badge:hover { opacity: 0.8; }
+        .tag-badge:hover { background: #c8e6c9; }
 
         .info-section { margin-top: 5px; font-size: 0.88em; line-height: 1.6; border-top: 1px solid #eee; padding-top: 12px; flex-grow: 1; }
         .info-item { margin-bottom: 6px; }
         .info-label { color: var(--primary-green); font-weight: 800; margin-right: 4px; }
         
-        /* 地圖連結：移除底線 */
+        /* 藍色無底線地圖連結 */
         .map-link { color: #3498db; text-decoration: none; font-weight: 500; }
         .map-link:hover { opacity: 0.8; }
         
@@ -71,7 +71,7 @@
     <div class="header"><h1>我的小幫手</h1></div>
 
     <div class="search-container">
-        <input type="text" id="search-input" placeholder="🔍 搜尋店名、地址或標籤 (如：宮城縣)..." onkeyup="handleSearch()">
+        <input type="text" id="search-input" placeholder="🔍 搜尋店名、地址或標籤..." onkeyup="handleSearch()">
         <button class="clear-btn" onclick="clearSearch()">✕ 清除</button>
     </div>
 
@@ -79,7 +79,7 @@
         <button id="btn-all" class="filter-btn active" style="background-color: white; color: #004d40; border-color: #004d40;" onclick="filterContent('all', this)">全部</button>
     </div>
 
-    <div id="status" style="text-align:center; padding: 20px;">資料同步中...</div>
+    <div id="status" style="text-align:center; padding: 20px;">正在讀取資料...</div>
     <div id="dashboard" class="dashboard"></div>
 
     <div id="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">▲</div>
@@ -126,7 +126,7 @@
                 card.dataset.primaryTag = primaryTag;
                 card.dataset.fulltext = (item.title + (item.note || "") + (item.tags || []).join(" ")).toLowerCase();
                 
-                // 標籤樣式統一，點擊執行快速搜尋
+                // 這裡回歸最初的淺綠樣式：背景 #e8f5e9，字體顏色由 --primary-green 控制
                 const tagHtml = (item.tags || []).map(t => `<span class="tag-badge" onclick="quickSearch('${t}')">${t}</span>`).join('');
                 
                 let infoHtml = '';
