@@ -8,7 +8,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
         
         :root { 
-            --primary-green: #004d40; 
+            --primary-green: #31483c; 
             --bg-color: #f1f8e9; 
             --card-bg: #ffffff; 
             --map-blue: #3498db; 
@@ -52,7 +52,7 @@
         .filter-btn { 
             padding: 8px 18px; border-radius: 20px; cursor: pointer; 
             font-size: 0.95em; border: 2px solid transparent; 
-            transition: all 0.2s; 
+            transition: all 0.2s; font-weight: 500;
         }
 
         /* 儀表板佈局 */
@@ -80,10 +80,11 @@
         .info-section { margin-top: 5px; font-size: 0.88em; line-height: 1.6; border-top: 1px solid #eee; padding-top: 10px; }
         .info-item { margin-bottom: 4px; display: flex; align-items: flex-start; gap: 6px; }
         
+        /* 徹底移除底線 */
         .map-link { color: var(--map-blue); text-decoration: none !important; font-weight: 500; }
-        .map-link:hover { opacity: 0.8; }
+        .map-link:hover { text-decoration: none !important; opacity: 0.8; }
         
-        /* 卡片備註：非斜體，維持色值與大小 */
+        /* 備註：非斜體，維持色值與大小 */
         .note-text { color: #78909c; font-style: normal; font-size: 0.9em; margin-top: 5px; }
 
         .btn { 
@@ -93,7 +94,7 @@
             font-size: 1.2em; flex-shrink: 0; 
         }
 
-        /* --- 清單模式 (List Mode) 重點優化 --- */
+        /* --- 清單模式 (List Mode) --- */
         .dashboard.list-mode { grid-template-columns: 1fr; gap: 8px; }
         .list-mode .link-card { flex-direction: row; min-height: 60px; padding: 8px 24px; align-items: center; }
         .list-mode .cover-img { display: none; }
@@ -105,6 +106,7 @@
         
         .list-mode .info-section { border-top: none; padding-top: 0; margin-top: 0; display: flex; flex: 1; align-items: center; gap: 0; }
         
+        /* 店名寬度拉長，地址右移 */
         .list-mode .shop-name-item { 
             flex: 0 0 280px; font-size: 0.95em; font-weight: 600; color: #455a64; 
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 20px; 
@@ -146,10 +148,14 @@
 
     <script>
         let allItems = [];
+        // 9 個特定色階
+        const customColors = [
+            '#31483c', '#3e564b', '#4b645a', '#587269', 
+            '#658078', '#728e87', '#7f9c96', '#8caaa5', '#99b9b4'
+        ];
 
         async function init() {
             try {
-                // 加上時間戳記防止快取
                 const response = await fetch('./data.json?t=' + new Date().getTime());
                 const data = await response.json();
                 allItems = data.items;
@@ -157,11 +163,11 @@
                 renderFilters(allItems);
                 renderCards(allItems);
             } catch (err) {
-                document.getElementById('status').innerText = '讀取失敗，請確認 data.json 路徑。';
+                document.getElementById('status').innerText = '讀取失敗。';
             }
         }
 
-        // --- 分類按鈕與漸層邏輯 ---
+        // --- 分類按鈕與指定色階邏輯 ---
         function renderFilters(items) {
             const filterBar = document.getElementById('filter-bar');
             const primaryTags = new Set();
@@ -172,7 +178,6 @@
 
             // 建立全部按鈕
             const btnAll = document.createElement('button');
-            btnAll.id = 'btn-all';
             btnAll.className = 'filter-btn active';
             btnAll.innerText = '全部';
             btnAll.onclick = () => filterContent('all', btnAll);
@@ -192,17 +197,16 @@
 
         function updateFilterStyles() {
             const btns = document.querySelectorAll('.filter-btn');
-            const total = btns.length;
-
             btns.forEach((btn, index) => {
                 if (btn.classList.contains('active')) {
                     btn.style.backgroundColor = 'white';
-                    btn.style.color = '#004d40';
-                    btn.style.borderColor = '#004d40';
+                    btn.style.color = '#31483c';
+                    btn.style.borderColor = '#31483c';
                 } else {
-                    const alpha = total > 1 ? Math.max(0.25, 0.9 - (index / (total - 1)) * 0.65) : 0.9;
-                    btn.style.backgroundColor = `rgba(0, 77, 64, ${alpha})`;
-                    btn.style.color = alpha < 0.5 ? '#004d40' : 'white';
+                    const colorIndex = index % customColors.length;
+                    const targetColor = customColors[colorIndex];
+                    btn.style.backgroundColor = targetColor;
+                    btn.style.color = 'white'; // 強制白色字
                     btn.style.borderColor = 'transparent';
                 }
             });
@@ -245,33 +249,26 @@
                 let addrHtml = addr ? `<div class="info-item address-item">📍 <a href="${mapUrl}" target="_blank" class="map-link">${addr}</a></div>` : `<div class="info-item address-item"></div>`;
                 let noteHtml = extraNote ? `<div class="note-text">💡 ${extraNote}</div>` : '';
 
-                const infoHtml = `<div class="info-section">${nameHtml}${addrHtml}${noteHtml}</div>`;
-
                 card.innerHTML = `
                     <img src="${item.cover || 'https://via.placeholder.com/300x150'}" class="cover-img">
                     <div class="card-content">
                         <div class="card-title">${item.title}</div>
                         <div class="tag-wrapper">${tagHtml}</div>
-                        ${infoHtml}
+                        <div class="info-section">${nameHtml}${addrHtml}${noteHtml}</div>
                         <a href="${item.link}" target="_blank" class="btn">➜</a>
                     </div>`;
                 container.appendChild(card);
             });
         }
 
-        // --- 輔助功能 ---
         function setMode(mode) {
             const d = document.getElementById('dashboard');
             const gBtn = document.getElementById('grid-btn');
             const lBtn = document.getElementById('list-btn');
             if (mode === 'list') {
-                d.classList.add('list-mode');
-                lBtn.classList.add('active');
-                gBtn.classList.remove('active');
+                d.classList.add('list-mode'); lBtn.classList.add('active'); gBtn.classList.remove('active');
             } else {
-                d.classList.remove('list-mode');
-                gBtn.classList.add('active');
-                lBtn.classList.remove('active');
+                d.classList.remove('list-mode'); gBtn.classList.add('active'); lBtn.classList.remove('active');
             }
         }
 
@@ -283,13 +280,11 @@
         }
 
         function quickSearch(tagName) {
-            document.getElementById('search-input').value = tagName;
-            handleSearch();
+            document.getElementById('search-input').value = tagName; handleSearch();
         }
 
         function clearSearch() {
-            document.getElementById('search-input').value = '';
-            handleSearch();
+            document.getElementById('search-input').value = ''; handleSearch();
         }
 
         window.onscroll = function() {
