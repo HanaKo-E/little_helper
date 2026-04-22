@@ -3,21 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的小幫手 v3.8</title>
+    <title>我的小幫手 v3.9</title>
     <style>
-        /* 引入 Google Fonts: Kosugi Maru (標題) 與 DotGothic16 (內文) */
-        @import url('https://fonts.googleapis.com/css2?family=DotGothic16&family=Kosugi+Maru&display=swap');
+        /* 恢復使用乾淨的思源黑體 */
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
 
         :root {
             --primary-green: #004d40; /* 墨綠色 */
-            --accent-green: #2e7d32;
             --bg-color: #f1f8e9;
             --card-bg: #ffffff;
         }
 
         body {
-            /* 預設使用 DotGothic16 */
-            font-family: 'DotGothic16', sans-serif;
+            font-family: 'Noto Sans TC', -apple-system, sans-serif;
             background-color: var(--bg-color);
             margin: 0;
             padding: 20px;
@@ -25,21 +23,12 @@
             -webkit-font-smoothing: antialiased;
         }
 
+        .header { text-align: center; margin-bottom: 30px; }
         .header h1 { 
-            /* 標題專用 Kosugi Maru */
-            font-family: 'Kosugi Maru', sans-serif;
             color: var(--primary-green); 
-            font-weight: 400;
+            font-weight: 900;
             letter-spacing: 2px;
-            font-size: 2.5em;
-            margin-top: 40px;
-            text-shadow: 2px 2px 0px rgba(0,0,0,0.05);
-        }
-
-        .header p {
-            font-family: 'DotGothic16', sans-serif;
-            color: var(--accent-green);
-            font-size: 0.9em;
+            margin-top: 30px;
         }
 
         /* 篩選按鈕區塊 */
@@ -47,7 +36,7 @@
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
-            gap: 12px;
+            gap: 10px;
             margin-bottom: 35px;
             position: sticky;
             top: 15px;
@@ -55,21 +44,28 @@
         }
 
         .filter-btn {
-            font-family: 'DotGothic16', sans-serif; /* 按鈕也使用點陣體增加風格 */
             padding: 8px 20px;
-            background: white;
-            border: 2px solid var(--primary-green);
-            border-radius: 4px; /* 配合點陣體，減少圓角，改用微方角更帥氣 */
+            border-radius: 25px;
             cursor: pointer;
-            font-size: 1em;
-            color: var(--primary-green);
-            transition: all 0.2s;
-            box-shadow: 3px 3px 0px var(--primary-green); /* 加上硬陰影 */
+            font-size: 0.95em;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: 2px solid transparent; /* 預設無邊框 */
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
+        /* 預設狀態：實心綠底白字 (根據你的需求反轉) */
+        .filter-btn.default-style {
+            color: white;
+        }
+
+        /* 按下後/選中狀態：白底綠字 */
         .filter-btn.active {
-            transform: translate(2px, 2px);
-            box-shadow: 0px 0px 0px var(--primary-green);
+            background-color: white !important;
+            border: 2px solid; /* 顏色由 JS 動態決定 */
+            color: inherit; /* 顏色由 JS 動態決定 */
+            transform: scale(1.05);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
 
         .dashboard {
@@ -82,69 +78,53 @@
 
         .link-card {
             background: var(--card-bg);
-            border: 2px solid var(--primary-green); /* 增加邊框呼應點陣風格 */
-            border-radius: 4px;
+            border-radius: 12px;
             overflow: hidden;
-            box-shadow: 6px 6px 0px rgba(0, 77, 64, 0.1);
-            transition: transform 0.2s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+            transition: transform 0.3s;
             display: flex;
             flex-direction: column;
         }
-
         .link-card.hidden { display: none; }
-        .link-card:hover { transform: translate(-3px, -3px); box-shadow: 9px 9px 0px rgba(0, 77, 64, 0.15); }
+        .link-card:hover { transform: translateY(-5px); }
 
-        .cover-img { width: 100%; height: 170px; object-fit: cover; filter: contrast(1.1); }
-
+        .cover-img { width: 100%; height: 170px; object-fit: cover; }
         .card-content { padding: 18px; flex-grow: 1; display: flex; flex-direction: column; }
-        
-        .card-title { 
-            font-family: 'DotGothic16', sans-serif;
-            font-size: 1.1em; 
-            margin-bottom: 12px; 
-            height: 3em; 
-            overflow: hidden; 
-            color: #1a252b;
-            line-height: 1.4;
-        }
+        .card-title { font-weight: 700; font-size: 1.05em; margin-bottom: 12px; height: 3em; overflow: hidden; color: #37474f; }
 
         .tag-badge { 
-            font-size: 0.8em; 
+            font-size: 0.75em; 
             background: #e8f5e9; 
             padding: 2px 8px; 
-            border: 1px solid var(--primary-green);
-            border-radius: 0px; /* 點陣風格不建議用圓角 */
+            border-radius: 4px;
             margin-right: 6px;
             color: var(--primary-green);
         }
 
         .btn {
-            font-family: 'DotGothic16', sans-serif;
             text-align: center;
-            padding: 10px;
+            padding: 12px;
             background: var(--primary-green);
             color: white;
             text-decoration: none;
-            font-size: 1em;
+            border-radius: 8px;
+            font-size: 0.9em;
+            font-weight: 700;
             margin-top: auto;
-            border: 1px solid var(--primary-green);
         }
-        
-        #status { font-family: 'DotGothic16', sans-serif; text-align: center; color: var(--primary-green); }
     </style>
 </head>
 <body>
 
     <div class="header">
         <h1>我的小幫手</h1>
-        <p>[ SYSTEM ONLINE / DATA SYNC EVERY HOUR ]</p>
     </div>
 
     <div id="filter-bar" class="filter-container">
-        <button class="filter-btn active" style="background-color: #004d40; color: white;" onclick="filterContent('all', this)">全部</button>
+        <button id="btn-all" class="filter-btn active" style="background-color: white; color: #004d40; border-color: #004d40;" onclick="filterContent('all', this)">全部</button>
     </div>
 
-    <div id="status">正在載入數據檔案...</div>
+    <div id="status" style="text-align:center;">同步中...</div>
     <div id="dashboard" class="dashboard"></div>
 
     <script>
@@ -160,7 +140,7 @@
                 renderFilters(allItems);
                 renderCards(allItems);
             } catch (err) {
-                document.getElementById('status').innerText = 'ERROR: DATA_LOAD_FAILED';
+                document.getElementById('status').innerText = '讀取失敗。';
             }
         }
 
@@ -172,12 +152,14 @@
             let colorIndex = 0;
             tags.forEach(tag => {
                 const btn = document.createElement('button');
-                btn.className = 'filter-btn';
+                btn.className = 'filter-btn default-style';
                 btn.innerText = tag;
                 const currentColor = greenShades[colorIndex % greenShades.length];
+                
+                // 預設是實心綠底
+                btn.style.backgroundColor = currentColor;
                 btn.dataset.color = currentColor;
-                btn.style.borderColor = currentColor;
-                btn.style.color = currentColor;
+
                 btn.onclick = () => filterContent(tag, btn);
                 filterBar.appendChild(btn);
                 colorIndex++;
@@ -193,11 +175,11 @@
                 card.dataset.tags = JSON.stringify(item.tags || []);
                 const tagHtml = (item.tags || []).map(t => `<span class="tag-badge">${t}</span>`).join('');
                 card.innerHTML = `
-                    <img src="${item.cover || 'https://via.placeholder.com/300x160?text=NO_IMAGE'}" class="cover-img">
+                    <img src="${item.cover || 'https://via.placeholder.com/300x160'}" class="cover-img">
                     <div class="card-content">
                         <div class="card-title">${item.title}</div>
                         <div style="margin-bottom:15px;">${tagHtml}</div>
-                        <a href="${item.link}" target="_blank" class="btn">GO_TO_SOURCE ></a>
+                        <a href="${item.link}" target="_blank" class="btn">立即前往</a>
                     </div>
                 `;
                 container.appendChild(card);
@@ -205,21 +187,25 @@
         }
 
         function filterContent(tag, btnEl) {
+            // 重置所有按鈕回實心綠底白字
             document.querySelectorAll('.filter-btn').forEach(b => {
                 b.classList.remove('active');
-                b.style.backgroundColor = 'white';
-                b.style.color = b.dataset.color || '#004d40';
-                b.style.transform = 'translate(0, 0)';
-                b.style.boxShadow = `3px 3px 0px ${b.dataset.color || '#004d40'}`;
+                b.classList.add('default-style');
+                const originalColor = b.dataset.color || '#004d40';
+                b.style.backgroundColor = originalColor;
+                b.style.color = 'white';
+                b.style.borderColor = 'transparent';
             });
 
+            // 選中的按鈕變為「白底綠字」
             btnEl.classList.add('active');
+            btnEl.classList.remove('default-style');
             const activeColor = btnEl.dataset.color || '#004d40';
-            btnEl.style.backgroundColor = activeColor;
-            btnEl.style.color = 'white';
-            btnEl.style.transform = 'translate(2px, 2px)';
-            btnEl.style.boxShadow = '0px 0px 0px transparent';
+            btnEl.style.backgroundColor = 'white';
+            btnEl.style.color = activeColor;
+            btnEl.style.borderColor = activeColor;
 
+            // 過濾
             document.querySelectorAll('.link-card').forEach(card => {
                 const cardTags = JSON.parse(card.dataset.tags);
                 (tag === 'all' || cardTags.includes(tag)) ? card.classList.remove('hidden') : card.classList.add('hidden');
