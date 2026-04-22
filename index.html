@@ -1,52 +1,57 @@
-/* --- 請替換原本的 renderFilters 函數 --- */
-
 function renderFilters(items) {
     const filterBar = document.getElementById('filter-bar');
     const primaryTags = new Set();
     items.forEach(item => { if (item.tags && item.tags.length > 0) primaryTags.add(item.tags[0]); });
     
     const tagArray = Array.from(primaryTags);
-    const total = tagArray.length + 1; // 加上「全部」按鈕
-
-    // 處理「全部」按鈕 (最深)
-    const btnAll = document.getElementById('btn-all');
-    btnAll.style.backgroundColor = 'rgba(0, 77, 64, 1)';
-    btnAll.style.color = 'white';
-    btnAll.onclick = () => filterContent('all', btnAll);
+    
+    // 清空除了「全部」以外的按鈕，避免重複渲染
+    while (filterBar.childNodes.length > 2) {
+        filterBar.removeChild(filterBar.lastChild);
+    }
 
     tagArray.forEach((tag, index) => {
         const btn = document.createElement('button');
         btn.className = 'filter-btn';
         btn.innerText = tag;
-        
-        // 動態計算透明度：從 0.95 逐漸降到 0.3
-        // 公式：1 - (當前索引 / 總數) * 比例
-        const opacity = Math.max(0.3, 0.95 - ((index + 1) / total) * 0.8);
-        
-        btn.style.backgroundColor = `rgba(0, 77, 64, ${opacity})`;
-        btn.style.color = opacity < 0.5 ? '#004d40' : 'white'; // 太淺時字改用深色確保讀取
-        btn.style.borderColor = 'transparent';
-        
         btn.onclick = () => filterContent(tag, btn);
         filterBar.appendChild(btn);
     });
+
+    // 初始化所有按鈕顏色
+    updateFilterStyles();
 }
 
-/* --- 同步更新 filterContent 確保點擊後的狀態正確 --- */
+// 新增：統一管理按鈕樣式的函數
+function updateFilterStyles() {
+    const btns = document.querySelectorAll('.filter-btn');
+    const total = btns.length;
+
+    btns.forEach((btn, index) => {
+        if (btn.classList.contains('active')) {
+            // 選中狀態：固定白底深字
+            btn.style.backgroundColor = 'white';
+            btn.style.color = '#004d40';
+            btn.style.borderColor = '#004d40';
+        } else {
+            // 非選中狀態：根據索引計算漸層透明度
+            const opacity = Math.max(0.3, 0.95 - (index / total) * 0.7);
+            btn.style.backgroundColor = `rgba(0, 77, 64, ${opacity})`;
+            btn.style.color = opacity < 0.5 ? '#004d40' : 'white';
+            btn.style.borderColor = 'transparent';
+        }
+    });
+}
 
 function filterContent(tag, btnEl) {
-    document.querySelectorAll('.filter-btn').forEach(b => {
-        b.classList.remove('active');
-        // 恢復原本該有的透明度（這裡我們從 style 屬性重新讀取或設回初始）
-        // 簡單做法：讓 active 狀態直接反轉顏色
-    });
-    
+    // 1. 切換 Active 類名
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
     btnEl.classList.add('active');
-    // active 狀態強制變成白底深字，確保選中感
-    btnEl.style.backgroundColor = 'white';
-    btnEl.style.color = '#004d40';
-    btnEl.style.borderColor = '#004d40';
 
+    // 2. 重新整理所有按鈕的視覺樣式
+    updateFilterStyles();
+
+    // 3. 過濾卡片內容
     document.querySelectorAll('.link-card').forEach(card => {
         card.style.display = (tag === 'all' || card.dataset.primaryTag === tag) ? "" : "none";
     });
