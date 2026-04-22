@@ -9,7 +9,7 @@
         :root { --primary-green: #004d40; --bg-color: #f1f8e9; --card-bg: #ffffff; --map-blue: #3498db; }
         body { font-family: 'Noto Sans TC', sans-serif; background-color: var(--bg-color); margin: 0; padding: 20px; color: #263238; -webkit-font-smoothing: antialiased; }
         
-        /* 基礎佈局 */
+        /* 基礎佈局與控制項 (保持 v5.20 邏輯) */
         .header { text-align: center; margin-bottom: 20px; }
         .header h1 { color: var(--primary-green); font-weight: 900; letter-spacing: 2px; }
         .controls-container { max-width: 800px; margin: 0 auto 20px; position: sticky; top: 10px; z-index: 101; display: flex; flex-direction: column; gap: 10px; }
@@ -25,7 +25,6 @@
         .dashboard { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; max-width: 1400px; margin: 0 auto; }
         .link-card { background: var(--card-bg); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.06); display: flex; flex-direction: column; transition: 0.2s; height: 100%; }
         .cover-img { width: 100%; height: 150px; object-fit: cover; background: #eee; }
-        
         .card-content { padding: 18px; flex-grow: 1; display: flex; flex-direction: column; }
         .card-title { font-weight: 700; font-size: 1.05em; margin-bottom: 8px; color: #1a252b; line-height: 1.4; }
         .tag-wrapper { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
@@ -34,32 +33,46 @@
         /* 資訊樣式 */
         .info-section { margin-top: 5px; font-size: 0.88em; line-height: 1.6; border-top: 1px solid #eee; padding-top: 10px; }
         .info-item { margin-bottom: 4px; display: flex; align-items: flex-start; gap: 6px; }
-        .map-link { color: var(--map-blue); text-decoration: none !important; font-weight: 500; } /* 絕對不顯示底線 */
-        .map-link:hover { text-decoration: none !important; opacity: 0.8; }
-        
-        /* 卡片模式下的 NOTE：取消斜體，維持色值與大小 */
+        .map-link { color: var(--map-blue); text-decoration: none !important; font-weight: 500; }
         .note-text { color: #78909c; font-style: normal; font-size: 0.9em; margin-top: 5px; }
 
         .btn { align-self: flex-end; margin-top: auto; width: 40px; height: 40px; background: var(--primary-green); color: white; text-decoration: none; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.2em; flex-shrink: 0; }
 
-        /* --- 清單模式：隱藏 NOTE 並優化空間 --- */
+        /* --- 清單模式：優化地址向右偏移 --- */
         .dashboard.list-mode { grid-template-columns: 1fr; gap: 8px; }
         .list-mode .link-card { flex-direction: row; min-height: 60px; padding: 8px 24px; align-items: center; }
         .list-mode .cover-img { display: none; }
         .list-mode .card-content { padding: 0; flex-direction: row; align-items: center; width: 100%; gap: 30px; }
         
         .list-mode .card-title { margin-bottom: 0; flex: 0 0 18%; min-width: 160px; }
-        .list-mode .tag-wrapper { margin-bottom: 0; flex: 0 0 15%; min-width: 135px; }
+        .list-mode .tag-wrapper { margin-bottom: 0; flex: 0 0 14%; min-width: 125px; }
         .list-mode .tag-badge { font-size: 12px; padding: 3px 10px; }
         
-        .list-mode .info-section { border-top: none; padding-top: 0; margin-top: 0; display: flex; flex: 1; align-items: center; gap: 30px; }
-        .list-mode .shop-name-item { flex: 0 0 180px; font-size: 0.95em; font-weight: 600; color: #455a64; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .list-mode .address-item { flex: 1; font-size: 0.9em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .list-mode .info-section { border-top: none; padding-top: 0; margin-top: 0; display: flex; flex: 1; align-items: center; gap: 0; }
         
-        /* 關鍵：清單模式下隱藏備註 */
+        /* 將店名區塊拉寬，迫使地址右移 */
+        .list-mode .shop-name-item { 
+            flex: 0 0 280px; /* 增加寬度讓地址向右移 */
+            font-size: 0.95em; 
+            font-weight: 600; 
+            color: #455a64; 
+            white-space: nowrap; 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+            padding-right: 20px; 
+        }
+        
+        /* 地址區塊 */
+        .list-mode .address-item { 
+            flex: 1; 
+            font-size: 0.9em; 
+            white-space: nowrap; 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+        }
+        
         .list-mode .note-text { display: none; }
-        
-        .list-mode .btn { margin-top: 0; margin-left: 10px; width: 36px; height: 36px; }
+        .list-mode .btn { margin-top: 0; margin-left: 20px; width: 36px; height: 36px; }
 
         #back-to-top { position: fixed; bottom: 25px; right: 25px; width: 45px; height: 45px; background: var(--primary-green); color: white; border-radius: 50%; display: none; justify-content: center; align-items: center; z-index: 1000; }
     </style>
@@ -119,24 +132,17 @@
                 
                 let infoHtml = '';
                 let name = ""; let addr = ""; let extraNote = "";
-
                 if (item.note && item.note.includes('|')) {
                     const parts = item.note.split('|').map(p => p.trim());
                     name = parts[0]; addr = parts[1]; extraNote = parts[2] || "";
-                } else {
-                    extraNote = item.note || "";
-                }
+                } else { extraNote = item.note || ""; }
 
                 const mapUrl = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(addr || name);
-                let nameHtml = name ? `<div class="info-item shop-name-item">🏠 ${name}</div>` : '';
-                let addrHtml = addr ? `<div class="info-item address-item">📍 <a href="${mapUrl}" target="_blank" class="map-link">${addr}</a></div>` : '';
+                let nameHtml = name ? `<div class="info-item shop-name-item">🏠 ${name}</div>` : `<div class="info-item shop-name-item"></div>`;
+                let addrHtml = addr ? `<div class="info-item address-item">📍 <a href="${mapUrl}" target="_blank" class="map-link">${addr}</a></div>` : `<div class="info-item address-item"></div>`;
                 let noteHtml = extraNote ? `<div class="note-text">💡 ${extraNote}</div>` : '';
 
-                if (name || addr || extraNote) {
-                    infoHtml = `<div class="info-section">${nameHtml}${addrHtml}${noteHtml}</div>`;
-                } else {
-                    infoHtml = `<div class="info-section" style="border:none;"></div>`;
-                }
+                infoHtml = `<div class="info-section">${nameHtml}${addrHtml}${noteHtml}</div>`;
 
                 card.innerHTML = `<img src="${item.cover || 'https://via.placeholder.com/300x150'}" class="cover-img">
                     <div class="card-content">
