@@ -1,36 +1,125 @@
-function renderCards(items) {
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的小幫手 v4.0</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
+        :root { --primary-green: #004d40; --bg-color: #f1f8e9; --card-bg: #ffffff; }
+        body { font-family: 'Noto Sans TC', sans-serif; background-color: var(--bg-color); margin: 0; padding: 20px; color: #263238; -webkit-font-smoothing: antialiased; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .header h1 { color: var(--primary-green); font-weight: 900; letter-spacing: 2px; margin-top: 30px; }
+        .filter-container { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-bottom: 35px; position: sticky; top: 15px; z-index: 100; }
+        .filter-btn { padding: 8px 20px; border-radius: 25px; cursor: pointer; font-size: 0.95em; font-weight: 500; transition: all 0.2s ease; border: 2px solid transparent; box-shadow: 0 4px 6px rgba(0,0,0,0.1); color: white; }
+        .filter-btn.active { background-color: white !important; border: 2px solid; color: inherit; transform: scale(1.05); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .dashboard { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; max-width: 1200px; margin: 0 auto; }
+        .link-card { background: var(--card-bg); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.06); transition: transform 0.3s; display: flex; flex-direction: column; }
+        .link-card.hidden { display: none; }
+        .link-card:hover { transform: translateY(-5px); }
+        .cover-img { width: 100%; height: 170px; object-fit: cover; }
+        .card-content { padding: 18px; flex-grow: 1; display: flex; flex-direction: column; }
+        .card-title { font-weight: 700; font-size: 1.05em; margin-bottom: 12px; height: 3em; overflow: hidden; color: #37474f; line-height: 1.5; }
+        .tag-badge { font-size: 0.75em; background: #e8f5e9; padding: 2px 8px; border-radius: 4px; margin-right: 6px; color: var(--primary-green); }
+        .address-box { margin: 10px 0; font-size: 0.85em; border-top: 1px solid #eee; padding-top: 10px; }
+        .address-link { color: #3498db; text-decoration: none; word-break: break-all; font-weight: 500; }
+        .address-link:hover { text-decoration: underline; }
+        .btn { text-align: center; padding: 12px; background: var(--primary-green); color: white; text-decoration: none; border-radius: 8px; font-size: 0.9em; font-weight: 700; margin-top: auto; }
+    </style>
+</head>
+<body>
+    <div class="header"><h1>我的小幫手</h1></div>
+    <div id="filter-bar" class="filter-container">
+        <button id="btn-all" class="filter-btn active" style="background-color: white; color: #004d40; border-color: #004d40;" onclick="filterContent('all', this)">全部</button>
+    </div>
+    <div id="status" style="text-align:center;">同步中...</div>
+    <div id="dashboard" class="dashboard"></div>
+
+    <script>
+        let allItems = [];
+        const greenShades = ['#004d40', '#00695c', '#2e7d32', '#43a047', '#66bb6a'];
+
+        async function init() {
+            try {
+                const response = await fetch('./data.json?t=' + new Date().getTime());
+                const data = await response.json();
+                allItems = data.items;
+                document.getElementById('status').style.display = 'none';
+                renderFilters(allItems);
+                renderCards(allItems);
+            } catch (err) { document.getElementById('status').innerText = '讀取失敗。'; }
+        }
+
+        function renderFilters(items) {
+            const filterBar = document.getElementById('filter-bar');
+            const tags = new Set();
+            items.forEach(item => { if (item.tags) item.tags.forEach(t => tags.add(t)); });
+            let colorIndex = 0;
+            tags.forEach(tag => {
+                const btn = document.createElement('button');
+                btn.className = 'filter-btn';
+                btn.innerText = tag;
+                const currentColor = greenShades[colorIndex % greenShades.length];
+                btn.style.backgroundColor = currentColor;
+                btn.dataset.color = currentColor;
+                btn.onclick = () => filterContent(tag, btn);
+                filterBar.appendChild(btn);
+                colorIndex++;
+            });
+        }
+
+        function renderCards(items) {
             const container = document.getElementById('dashboard');
             container.innerHTML = '';
             items.forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'link-card';
                 card.dataset.tags = JSON.stringify(item.tags || []);
-                
                 const tagHtml = (item.tags || []).map(t => `<span class="tag-badge">${t}</span>`).join('');
                 
-                // 處理地址顯示邏輯：如果 note 存在，則顯示並製作地圖連結
+                // 修正地圖連結邏輯
                 let addressHtml = '';
                 if (item.note && item.note.trim() !== "") {
                     const encodedAddress = encodeURIComponent(item.note);
-                    const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
+                    const mapUrl = "https://www.google.com/maps/search/?api=1&query=" + encodedAddress;
                     addressHtml = `
-                        <div style="margin-top: 10px; font-size: 0.85em; color: #555;">
+                        <div class="address-box">
                             <span style="color: var(--primary-green); font-weight: bold;">📍 地址：</span>
-                            <a href="${mapUrl}" target="_blank" style="color: #3498db; text-decoration: underline;">
-                                ${item.note}
-                            </a>
-                        </div>
-                    `;
+                            <a href="${mapUrl}" target="_blank" class="address-link">${item.note}</a>
+                        </div>`;
                 }
 
                 card.innerHTML = `
-                    <img src="${item.cover || 'https://via.placeholder.com/300x160?text=No+Image'}" class="cover-img">
+                    <img src="${item.cover || 'https://via.placeholder.com/300x160'}" class="cover-img">
                     <div class="card-content">
                         <div class="card-title">${item.title}</div>
-                        <div style="margin-bottom:10px;">${tagHtml}</div>
-                        ${addressHtml} <a href="${item.link}" target="_blank" class="btn" style="margin-top: 15px;">立即前往</a>
-                    </div>
-                `;
+                        <div>${tagHtml}</div>
+                        ${addressHtml}
+                        <a href="${item.link}" target="_blank" class="btn" style="margin-top:15px;">立即前往</a>
+                    </div>`;
                 container.appendChild(card);
             });
         }
+
+        function filterContent(tag, btnEl) {
+            document.querySelectorAll('.filter-btn').forEach(b => {
+                b.classList.remove('active');
+                const originalColor = b.dataset.color || '#004d40';
+                b.style.backgroundColor = originalColor;
+                b.style.color = 'white';
+                b.style.borderColor = 'transparent';
+            });
+            btnEl.classList.add('active');
+            const activeColor = btnEl.dataset.color || '#004d40';
+            btnEl.style.backgroundColor = 'white';
+            btnEl.style.color = activeColor;
+            btnEl.style.borderColor = activeColor;
+            document.querySelectorAll('.link-card').forEach(card => {
+                const cardTags = JSON.parse(card.dataset.tags);
+                (tag === 'all' || cardTags.includes(tag)) ? card.style.display = "" : card.style.display = "none";
+            });
+        }
+        init();
+    </script>
+</body>
+</html>
