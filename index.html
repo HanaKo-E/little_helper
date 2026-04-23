@@ -3,287 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的小幫手</title>
+    <title>我的小幫手 - 準確修正版</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
+        :root { --primary-green: #31483c; --bg-color: #f1f8e9; --card-bg: #ffffff; --map-blue: #3498db; }
+        body { font-family: 'Noto Sans TC', sans-serif; background-color: var(--bg-color); margin: 0; padding: 20px; color: #263238; }
         
-        :root { 
-            --primary-green: #31483c; 
-            --bg-color: #f1f8e9; 
-            --card-bg: #ffffff; 
-            --map-blue: #3498db; 
-        }
-
-        body { 
-            font-family: 'Noto Sans TC', sans-serif; 
-            background-color: var(--bg-color); 
-            margin: 0; padding: 20px; 
-            color: #263238; 
-            -webkit-font-smoothing: antialiased; 
-        }
-        
-        /* 頁首與搜尋控制 */
         .header { text-align: center; margin-bottom: 20px; }
         .header h1 { color: var(--primary-green); font-weight: 900; letter-spacing: 2px; }
         
-        .controls-container { 
-            max-width: 800px; margin: 0 auto 20px; 
-            position: sticky; top: 10px; z-index: 101; 
-            display: flex; flex-direction: column; gap: 10px; 
-        }
+        .controls-container { max-width: 800px; margin: 0 auto 20px; position: sticky; top: 10px; z-index: 101; display: flex; flex-direction: column; gap: 10px; }
         .search-bar-row { display: flex; gap: 10px; }
-        #search-input { 
-            flex-grow: 1; padding: 12px 25px; border-radius: 30px; 
-            border: 2px solid var(--primary-green); font-size: 1em; outline: none; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05); 
-        }
+        #search-input { flex-grow: 1; padding: 12px 25px; border-radius: 30px; border: 2px solid var(--primary-green); outline: none; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         
-        .mode-toggle { display: flex; background: #cfd8dc; border-radius: 20px; padding: 2px; }
-        .mode-btn { border: none; background: none; padding: 6px 12px; cursor: pointer; border-radius: 18px; font-size: 0.9em; }
-        .mode-btn.active { background: var(--primary-green); color: white; }
+        .filter-container { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; position: sticky; top: 120px; z-index: 100; background: var(--bg-color); padding: 10px 0; }
+        .filter-btn { padding: 8px 18px; border-radius: 20px; cursor: pointer; font-size: 0.95em; border: 2px solid transparent; transition: all 0.2s; font-weight: 500; color: white; }
+        .filter-btn.active { background-color: white !important; color: #31483c !important; border-color: #31483c !important; }
 
-        /* 分類按鈕容器 */
-        .filter-container { 
-            display: flex; justify-content: center; flex-wrap: wrap; 
-            gap: 8px; margin-bottom: 20px; 
-            position: sticky; top: 120px; z-index: 100; 
-            background: var(--bg-color); padding: 10px 0; 
-        }
-        .filter-btn { 
-            padding: 8px 18px; border-radius: 20px; cursor: pointer; 
-            font-size: 0.95em; border: 2px solid transparent; 
-            transition: all 0.2s; font-weight: 500;
-        }
-
-        /* 儀表板佈局 */
-        .dashboard { 
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
-            gap: 20px; max-width: 1400px; margin: 0 auto; 
-        }
-
-        /* 卡片樣式 (Grid Mode) */
-        .link-card { 
-            background: var(--card-bg); border-radius: 12px; overflow: hidden; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.06); 
-            display: flex; flex-direction: column; transition: 0.2s; height: 100%; 
-        }
-        .cover-img { width: 100%; height: 150px; object-fit: cover; background: #eee; }
+        .dashboard { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; max-width: 1400px; margin: 0 auto; }
+        .link-card { background: var(--card-bg); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.06); display: flex; flex-direction: column; position: relative; }
         .card-content { padding: 18px; flex-grow: 1; display: flex; flex-direction: column; }
-        .card-title { font-weight: 700; font-size: 1.05em; margin-bottom: 8px; color: #1a252b; line-height: 1.4; }
+        .card-title { font-weight: 700; margin-bottom: 8px; padding-right: 45px; line-height: 1.4; }
+        .tag-badge { font-size: 10px; background: #e8f5e9; padding: 2px 8px; border-radius: 4px; color: var(--primary-green); margin: 0 4px 4px 0; display: inline-block; }
+        .info-section { margin-top: 5px; font-size: 0.88em; border-top: 1px solid #eee; padding-top: 10px; }
         
-        .tag-wrapper { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
-        .tag-badge { 
-            font-size: 10px; background: #e8f5e9; padding: 2px 8px; 
-            border-radius: 4px; color: var(--primary-green); font-weight: 500; cursor: pointer; 
-        }
-        
-        .info-section { margin-top: 5px; font-size: 0.88em; line-height: 1.6; border-top: 1px solid #eee; padding-top: 10px; }
-        .info-item { margin-bottom: 4px; display: flex; align-items: flex-start; gap: 6px; }
-        
-        .map-link { color: var(--map-blue); text-decoration: none !important; font-weight: 500; }
-        .map-link:hover { text-decoration: none !important; opacity: 0.8; }
-        
-        .note-text { color: #78909c; font-style: normal; font-size: 0.9em; margin-top: 5px; }
-
-        .btn { 
-            align-self: flex-end; margin-top: auto; width: 40px; height: 40px; 
-            background: var(--primary-green); color: white; text-decoration: none; 
-            border-radius: 50%; display: flex; justify-content: center; align-items: center; 
-            font-size: 1.2em; flex-shrink: 0; 
-        }
-
-        /* --- 清單模式 (List Mode) --- */
-        .dashboard.list-mode { grid-template-columns: 1fr; gap: 8px; }
-        .list-mode .link-card { flex-direction: row; min-height: 60px; padding: 8px 24px; align-items: center; }
-        .list-mode .cover-img { display: none; }
-        .list-mode .card-content { padding: 0; flex-direction: row; align-items: center; width: 100%; gap: 30px; }
-        
-        .list-mode .card-title { margin-bottom: 0; flex: 0 0 18%; min-width: 160px; }
-        .list-mode .tag-wrapper { margin-bottom: 0; flex: 0 0 14%; min-width: 125px; }
-        .list-mode .info-section { border-top: none; padding-top: 0; margin-top: 0; display: flex; flex: 1; align-items: center; gap: 0; }
-        
-        .list-mode .shop-name-item { 
-            flex: 0 0 280px; font-size: 0.95em; font-weight: 600; color: #455a64; 
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 20px; 
-        }
-        .list-mode .address-item { flex: 1; font-size: 0.9em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .list-mode .note-text { display: none; }
-        .list-mode .btn { margin-top: 0; margin-left: 20px; width: 36px; height: 36px; }
+        .btn { position: absolute; right: 15px; top: 18px; width: 40px; height: 40px; background: var(--primary-green); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; text-decoration: none; font-size: 1.2em; }
 
         /* 手機版補強：取消硬性寬度，防止按鈕被擠出螢幕 */
         @media (max-width: 768px) {
-            .list-mode .card-content { flex-direction: column; align-items: flex-start; gap: 5px; position: relative; }
-            .list-mode .card-title, .list-mode .tag-wrapper, .list-mode .shop-name-item, .list-mode .address-item { 
-                flex: none; width: 100%; min-width: 0; white-space: normal; 
-            }
-            .list-mode .btn { position: absolute; right: 0; top: 50%; transform: translateY(-50%); }
-            .filter-container { top: 80px; }
-        }
-
-        #back-to-top { 
-            position: fixed; bottom: 25px; right: 25px; width: 45px; height: 45px; 
-            background: var(--primary-green); color: white; border-radius: 50%; 
-            display: none; justify-content: center; align-items: center; z-index: 1000; cursor: pointer;
+            .dashboard.list-mode { grid-template-columns: 1fr; }
+            .list-mode .link-card { flex-direction: column; padding: 15px; padding-right: 60px; }
+            .list-mode .card-content { gap: 5px; }
+            .btn { width: 36px; height: 36px; }
         }
     </style>
 </head>
 <body>
-
     <div class="header"><h1>我的小幫手</h1></div>
-
     <div class="controls-container">
         <div class="search-bar-row">
-            <input type="text" id="search-input" placeholder="🔍 搜尋店名、地址或標籤..." onkeyup="handleSearch()">
-            <div class="mode-toggle">
-                <button id="grid-btn" class="mode-btn active" onclick="setMode('grid')">卡片</button>
-                <button id="list-btn" class="mode-btn" onclick="setMode('list')">清單</button>
-            </div>
-            <button style="background:#cfd8dc; border:none; padding:0 15px; border-radius:20px; cursor:pointer;" onclick="clearSearch()">✕</button>
+            <input type="text" id="search-input" placeholder="🔍 搜尋..." onkeyup="handleSearch()">
         </div>
     </div>
-
     <div id="filter-bar" class="filter-container"></div>
-    <div id="status" style="text-align:center; padding: 20px;">資料載入中...</div>
     <div id="dashboard" class="dashboard"></div>
 
-    <div id="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">▲</div>
+<script>
+    let allItems = [];
+    const customColors = ['#31483c', '#4b645a', '#658078', '#7f9c96', '#99b9b4'];
 
-    <script>
-        let allItems = [];
-        const customColors = ['#31483c', '#3e564b', '#4b645a', '#587269', '#658078', '#728e87', '#7f9c96', '#8caaa5', '#99b9b4'];
+    async function init() {
+        try {
+            const res = await fetch('./data.json?t=' + Date.now());
+            const data = await res.json();
+            allItems = data.items;
+            renderFilters(allItems);
+            renderCards(allItems);
+        } catch (err) { console.error("載入失敗"); }
+    }
 
-        async function init() {
-            try {
-                const response = await fetch('./data.json?t=' + new Date().getTime());
-                const data = await response.json();
-                allItems = data.items;
-                document.getElementById('status').style.display = 'none';
-                renderFilters(allItems);
-                renderCards(allItems);
-            } catch (err) {
-                document.getElementById('status').innerText = '讀取失敗。';
+    function renderFilters(items) {
+        const bar = document.getElementById('filter-bar');
+        const tagSet = new Set();
+        
+        items.forEach(item => {
+            if (item.tags && item.tags.length > 0) {
+                // 優先邏輯：如果標籤包含 Travel，強制將 Travel 作為該項目的主分類
+                const hasTravel = item.tags.some(t => t.trim() === "Travel");
+                const mainTag = hasTravel ? "Travel" : item.tags[0].trim();
+                tagSet.add(mainTag);
             }
-        }
+        });
 
-        function renderFilters(items) {
-            const filterBar = document.getElementById('filter-bar');
-            const primaryTags = new Set();
-            // 關鍵點：使用 .trim() 確保 #Travel 不會因為空格消失
-            items.forEach(item => { if (item.tags && item.tags.length > 0) primaryTags.add(item.tags[0].trim()); });
+        bar.innerHTML = `<button class="filter-btn active" style="background:#31483c" onclick="filterContent('all', this)">全部</button>`;
+        Array.from(tagSet).forEach((tag, idx) => {
+            const btn = document.createElement('button');
+            btn.className = 'filter-btn';
+            btn.innerText = tag;
+            btn.style.backgroundColor = customColors[idx % customColors.length];
+            btn.onclick = () => filterContent(tag, btn);
+            bar.appendChild(btn);
+        });
+    }
+
+    function renderCards(items) {
+        const container = document.getElementById('dashboard');
+        container.innerHTML = '';
+        items.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'link-card';
             
-            const tagArray = Array.from(primaryTags);
-            filterBar.innerHTML = ''; 
+            // 判定主分類標籤
+            const hasTravel = item.tags.some(t => t.trim() === "Travel");
+            const primaryTag = hasTravel ? "Travel" : (item.tags[0] ? item.tags[0].trim() : "");
+            
+            card.dataset.primaryTag = primaryTag;
+            card.dataset.fulltext = (item.title + (item.note || "")).toLowerCase();
+            
+            card.innerHTML = `
+                <div class="card-content">
+                    <div class="card-title">${item.title}</div>
+                    <div>${item.tags.map(t => `<span class="tag-badge">${t}</span>`).join('')}</div>
+                    <div class="info-section">${item.note || ""}</div>
+                    <a href="${item.link}" target="_blank" class="btn">➜</a>
+                </div>`;
+            container.appendChild(card);
+        });
+    }
 
-            const btnAll = document.createElement('button');
-            btnAll.className = 'filter-btn active';
-            btnAll.innerText = '全部';
-            btnAll.onclick = () => filterContent('all', btnAll);
-            filterBar.appendChild(btnAll);
+    function filterContent(tag, btnEl) {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btnEl.classList.add('active');
+        document.querySelectorAll('.link-card').forEach(card => {
+            card.style.display = (tag === 'all' || card.dataset.primaryTag === tag) ? 'flex' : 'none';
+        });
+    }
 
-            tagArray.forEach((tag) => {
-                const btn = document.createElement('button');
-                btn.className = 'filter-btn';
-                btn.innerText = tag;
-                btn.onclick = () => filterContent(tag, btn);
-                filterBar.appendChild(btn);
-            });
-            updateFilterStyles();
-        }
+    function handleSearch() {
+        const q = document.getElementById('search-input').value.toLowerCase();
+        document.querySelectorAll('.link-card').forEach(card => {
+            card.style.display = card.dataset.fulltext.includes(q) ? 'flex' : 'none';
+        });
+    }
 
-        function updateFilterStyles() {
-            const btns = document.querySelectorAll('.filter-btn');
-            btns.forEach((btn, index) => {
-                if (btn.classList.contains('active')) {
-                    btn.style.backgroundColor = 'white';
-                    btn.style.color = '#31483c';
-                    btn.style.borderColor = '#31483c';
-                } else {
-                    btn.style.backgroundColor = customColors[index % customColors.length];
-                    btn.style.color = 'white';
-                    btn.style.borderColor = 'transparent';
-                }
-            });
-        }
-
-        function filterContent(tag, btnEl) {
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            btnEl.classList.add('active');
-            updateFilterStyles();
-
-            const query = tag.toLowerCase();
-            document.querySelectorAll('.link-card').forEach(card => {
-                const cardTag = (card.dataset.primaryTag || "").toLowerCase().trim();
-                card.style.display = (tag === 'all' || cardTag === query) ? "" : "none";
-            });
-        }
-
-        function renderCards(items) {
-            const container = document.getElementById('dashboard');
-            container.innerHTML = '';
-            items.forEach(item => {
-                const card = document.createElement('div');
-                card.className = 'link-card';
-                card.dataset.primaryTag = (item.tags && item.tags.length > 0) ? item.tags[0] : "";
-                card.dataset.fulltext = (item.title + (item.note || "") + (item.tags || []).join(" ")).toLowerCase();
-                
-                const tagHtml = (item.tags || []).map(t => `<span class="tag-badge" onclick="quickSearch('${t}')">${t}</span>`).join('');
-                
-                let name = ""; let addr = ""; let extraNote = "";
-                if (item.note && item.note.includes('|')) {
-                    const parts = item.note.split('|').map(p => p.trim());
-                    name = parts[0]; addr = parts[1]; extraNote = parts[2] || "";
-                } else {
-                    extraNote = item.note || "";
-                }
-
-                const mapUrl = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(addr || name);
-                let nameHtml = name ? `<div class="info-item shop-name-item">🏠 ${name}</div>` : `<div class="info-item shop-name-item"></div>`;
-                let addrHtml = addr ? `<div class="info-item address-item">📍 <a href="${mapUrl}" target="_blank" class="map-link">${addr}</a></div>` : `<div class="info-item address-item"></div>`;
-                let noteHtml = extraNote ? `<div class="note-text">💡 ${extraNote}</div>` : '';
-
-                card.innerHTML = `
-                    <img src="${item.cover || 'https://via.placeholder.com/300x150'}" class="cover-img">
-                    <div class="card-content">
-                        <div class="card-title">${item.title}</div>
-                        <div class="tag-wrapper">${tagHtml}</div>
-                        <div class="info-section">${nameHtml}${addrHtml}${noteHtml}</div>
-                        <a href="${item.link}" target="_blank" class="btn">➜</a>
-                    </div>`;
-                container.appendChild(card);
-            });
-        }
-
-        function setMode(mode) {
-            const d = document.getElementById('dashboard');
-            const gBtn = document.getElementById('grid-btn');
-            const lBtn = document.getElementById('list-btn');
-            if (mode === 'list') {
-                d.classList.add('list-mode'); lBtn.classList.add('active'); gBtn.classList.remove('active');
-            } else {
-                d.classList.remove('list-mode'); gBtn.classList.add('active'); lBtn.classList.remove('active');
-            }
-        }
-
-        function handleSearch() {
-            const query = document.getElementById('search-input').value.toLowerCase();
-            document.querySelectorAll('.link-card').forEach(card => {
-                card.style.display = card.dataset.fulltext.includes(query) ? "" : "none";
-            });
-        }
-
-        function quickSearch(tagName) {
-            document.getElementById('search-input').value = tagName; handleSearch();
-        }
-
-        function clearSearch() {
-            document.getElementById('search-input').value = ''; handleSearch();
-        }
-
-        window.onscroll = function() {
-            document.getElementById('back-to-top').style.display = (document.documentElement.scrollTop > 400) ? "flex" : "none";
-        };
-
-        init();
-    </script>
+    init();
+</script>
 </body>
 </html>
