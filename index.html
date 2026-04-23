@@ -3,65 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的小幫手 - 穩定版</title>
+    <title>我的人生合夥人 - 導航系統</title>
     <style>
-        :root { --primary-green: #31483c; --bg-color: #f1f8e9; }
-        body { font-family: sans-serif; background: var(--bg-color); padding: 15px; margin: 0; }
-        
-        .controls-container { max-width: 800px; margin: 0 auto 15px; position: sticky; top: 10px; z-index: 100; }
-        #search-input { width: 100%; padding: 12px 20px; border-radius: 25px; border: 2px solid var(--primary-green); outline: none; box-sizing: border-box; }
-        
-        .filter-container { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin: 15px 0; }
-        .filter-btn { padding: 8px 16px; border-radius: 20px; border: none; color: white; cursor: pointer; font-weight: bold; opacity: 0.6; transition: 0.3s; }
-        .filter-btn.active { opacity: 1; transform: scale(1.1); box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+        :root { 
+            --primary-green: #31483c; 
+            --bg-color: #f1f8e9; 
+            --card-bg: #ffffff; 
+        }
 
-        .dashboard { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; max-width: 1200px; margin: 0 auto; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            background-color: var(--bg-color); 
+            margin: 0; padding: 15px; 
+            color: #263238; 
+        }
         
-        /* 卡片樣式 */
-        .link-card { background: white; border-radius: 12px; padding: 15px; display: flex; flex-direction: column; position: relative; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        .card-title { font-weight: bold; margin-bottom: 10px; padding-right: 40px; }
-        .tag-badge { font-size: 11px; background: #e8f5e9; padding: 3px 8px; border-radius: 5px; color: var(--primary-green); margin: 0 4px 4px 0; display: inline-block; }
+        /* 控制區：搜尋與切換 */
+        .controls-container { max-width: 800px; margin: 0 auto 15px; position: sticky; top: 10px; z-index: 101; }
+        .search-bar-row { display: flex; gap: 8px; align-items: center; }
+        #search-input { flex-grow: 1; padding: 12px 20px; border-radius: 25px; border: 2px solid var(--primary-green); outline: none; font-size: 16px; }
         
-        /* 箭頭按鈕 - 絕對定位防擠壓 */
-        .btn { position: absolute; right: 15px; top: 15px; width: 35px; height: 35px; background: var(--primary-green); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; text-decoration: none; }
+        .mode-toggle { display: flex; background: #cfd8dc; border-radius: 20px; padding: 2px; flex-shrink: 0; }
+        .mode-btn { border: none; background: none; padding: 6px 15px; cursor: pointer; border-radius: 18px; font-size: 0.85em; transition: 0.3s; }
+        .mode-btn.active { background: var(--primary-green); color: white; }
 
-        @media (max-width: 600px) {
-            .dashboard { grid-template-columns: 1fr; }
+        /* 分類按鈕區 */
+        .filter-container { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+        .filter-btn { padding: 8px 18px; border-radius: 20px; border: none; color: white; cursor: pointer; font-weight: 500; opacity: 0.6; transition: 0.3s; font-size: 0.9em; }
+        .filter-btn.active { opacity: 1; transform: scale(1.05); box-shadow: 0 3px 10px rgba(0,0,0,0.15); }
+
+        /* 展示區 */
+        .dashboard { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; max-width: 1400px; margin: 0 auto; }
+        
+        /* 卡片共用樣式 */
+        .link-card { 
+            background: var(--card-bg); 
+            border-radius: 15px; 
+            overflow: hidden; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05); 
+            display: flex; 
+            flex-direction: column; 
+            position: relative;
+            transition: transform 0.2s;
+        }
+
+        .card-content { padding: 18px; flex-grow: 1; display: flex; flex-direction: column; }
+        .card-title { font-weight: 700; font-size: 1.05em; margin-bottom: 8px; line-height: 1.4; padding-right: 45px; word-break: break-all; }
+        .tag-badge { font-size: 11px; background: #e8f5e9; padding: 3px 10px; border-radius: 6px; color: var(--primary-green); margin-right: 5px; margin-top: 5px; display: inline-block; }
+        
+        .note-text { font-size: 0.85em; color: #666; margin-top: 10px; border-top: 1px solid #eee; padding-top: 10px; }
+        
+        /* 圓形箭頭按鈕 - 絕對定位保證不跑位 */
+        .btn { 
+            position: absolute; 
+            right: 15px; 
+            top: 18px; 
+            width: 38px; 
+            height: 38px; 
+            background: var(--primary-green); 
+            color: white; 
+            border-radius: 50%; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            text-decoration: none; 
+            font-size: 18px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        /* 手機清單模式 */
+        @media (max-width: 768px) {
+            .dashboard.list-mode { grid-template-columns: 1fr; }
+            .list-mode .link-card { min-height: 70px; }
+            .list-mode .note-text { display: none; } /* 清單模式隱藏備註節省空間 */
+            .list-mode .card-title { font-size: 0.95em; }
         }
     </style>
 </head>
 <body>
 
     <div class="controls-container">
-        <input type="text" id="search-input" placeholder="🔍 搜尋標題或備註..." onkeyup="handleSearch()">
+        <div class="search-bar-row">
+            <input type="text" id="search-input" placeholder="🔍 搜尋標題或備註..." onkeyup="handleSearch()">
+            <div class="mode-toggle">
+                <button id="grid-btn" class="mode-btn active" onclick="setMode('grid')">卡片</button>
+                <button id="list-btn" class="mode-btn" onclick="setMode('list')">清單</button>
+            </div>
+        </div>
     </div>
-    
+
     <div id="filter-bar" class="filter-container"></div>
     <div id="dashboard" class="dashboard"></div>
 
 <script>
-    // 自動修剪空格的強化腳本
-    async function loadData() {
+    let allItems = [];
+
+    // 初始化載入
+    async function init() {
         try {
             const response = await fetch('./data.json');
             const data = await response.json();
-            const items = data.items;
+            allItems = data.items;
             
-            renderFilters(items);
-            renderCards(items);
+            renderFilters(allItems);
+            renderCards(allItems);
         } catch (err) {
-            console.error("資料載入失敗:", err);
-            document.getElementById('dashboard').innerHTML = "載入失敗，請檢查 data.json 格式";
+            console.error("載入失敗:", err);
+            document.getElementById('dashboard').innerHTML = "JSON 檔案載入失敗，請檢查檔案名稱與格式。";
         }
     }
 
+    // 渲染分類按鈕
     function renderFilters(items) {
         const bar = document.getElementById('filter-bar');
         const tagSet = new Set();
         
-        // 抓取所有項目的第一個標籤，並強行去除空格
         items.forEach(item => {
             if (item.tags && item.tags.length > 0) {
+                // 強制去除兩端空格
                 tagSet.add(item.tags[0].trim());
             }
         });
@@ -79,6 +138,7 @@
         });
     }
 
+    // 渲染資料卡片
     function renderCards(items) {
         const container = document.getElementById('dashboard');
         container.innerHTML = '';
@@ -87,35 +147,35 @@
             const card = document.createElement('div');
             card.className = 'link-card';
             
-            // 重要：這裡儲存 tag 時也強行去除空格
-            const primaryTag = (item.tags && item.tags.length > 0) ? item.tags[0].trim() : "未分類";
-            card.dataset.tag = primaryTag;
+            const firstTag = (item.tags && item.tags.length > 0) ? item.tags[0].trim() : "未分類";
+            card.dataset.tag = firstTag;
             card.dataset.fulltext = (item.title + (item.note || "")).toLowerCase();
 
             card.innerHTML = `
-                <div class="card-title">${item.title}</div>
-                <div>${item.tags.map(t => `<span class="tag-badge">${t}</span>`).join('')}</div>
-                <a href="${item.link}" target="_blank" class="btn">➜</a>
+                <div class="card-content">
+                    <div class="card-title">${item.title}</div>
+                    <div class="tag-row">
+                        ${item.tags.map(t => `<span class="tag-badge">${t}</span>`).join('')}
+                    </div>
+                    ${item.note ? `<div class="note-text">${item.note}</div>` : ''}
+                    <a href="${item.link}" target="_blank" class="btn">➜</a>
+                </div>
             `;
             container.appendChild(card);
         });
     }
 
+    // 過濾功能
     function filterContent(tag, btn) {
-        // 1. 切換按鈕樣式
         document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
 
-        // 2. 執行過濾
         document.querySelectorAll('.link-card').forEach(card => {
-            if (tag === 'all' || card.dataset.tag === tag) {
-                card.style.display = 'flex';
-            } else {
-                card.style.display = 'none';
-            }
+            card.style.display = (tag === 'all' || card.dataset.tag === tag) ? 'flex' : 'none';
         });
     }
 
+    // 搜尋功能
     function handleSearch() {
         const q = document.getElementById('search-input').value.toLowerCase();
         document.querySelectorAll('.link-card').forEach(card => {
@@ -123,8 +183,17 @@
         });
     }
 
-    // 啟動
-    loadData();
+    // 切換模式 (卡片/清單)
+    function setMode(mode) {
+        const d = document.getElementById('dashboard');
+        if (mode === 'list') d.classList.add('list-mode');
+        else d.classList.remove('list-mode');
+        
+        document.getElementById('grid-btn').classList.toggle('active', mode === 'grid');
+        document.getElementById('list-btn').classList.toggle('active', mode === 'list');
+    }
+
+    init();
 </script>
 </body>
 </html>
