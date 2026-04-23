@@ -1,0 +1,20 @@
+{
+  "name": "中藥辨識挑戰",
+  "short_name": "中藥辨識",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#E8F5E9",
+  "theme_color": "#2F4F4F",
+  "icons": [
+    {
+      "src": "photo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "photo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
