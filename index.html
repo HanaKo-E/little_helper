@@ -3,130 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的小幫手 - 準確修正版</title>
+    <title>我的小幫手 - 原始純淨版</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
-        :root { --primary-green: #31483c; --bg-color: #f1f8e9; --card-bg: #ffffff; --map-blue: #3498db; }
+        :root { --primary-green: #31483c; --bg-color: #f1f8e9; --card-bg: #ffffff; }
         body { font-family: 'Noto Sans TC', sans-serif; background-color: var(--bg-color); margin: 0; padding: 20px; color: #263238; }
-        
         .header { text-align: center; margin-bottom: 20px; }
-        .header h1 { color: var(--primary-green); font-weight: 900; letter-spacing: 2px; }
-        
-        .controls-container { max-width: 800px; margin: 0 auto 20px; position: sticky; top: 10px; z-index: 101; display: flex; flex-direction: column; gap: 10px; }
-        .search-bar-row { display: flex; gap: 10px; }
-        #search-input { flex-grow: 1; padding: 12px 25px; border-radius: 30px; border: 2px solid var(--primary-green); outline: none; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        
-        .filter-container { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; position: sticky; top: 120px; z-index: 100; background: var(--bg-color); padding: 10px 0; }
-        .filter-btn { padding: 8px 18px; border-radius: 20px; cursor: pointer; font-size: 0.95em; border: 2px solid transparent; transition: all 0.2s; font-weight: 500; color: white; }
-        .filter-btn.active { background-color: white !important; color: #31483c !important; border-color: #31483c !important; }
-
+        .header h1 { color: var(--primary-green); font-weight: 900; }
+        .controls-container { max-width: 800px; margin: 0 auto 20px; position: sticky; top: 10px; z-index: 101; }
+        #search-input { width: 100%; padding: 12px 25px; border-radius: 30px; border: 2px solid var(--primary-green); outline: none; box-sizing: border-box; }
+        .filter-container { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+        .filter-btn { padding: 8px 18px; border-radius: 20px; cursor: pointer; border: none; background: #99b9b4; color: white; transition: 0.2s; }
+        .filter-btn.active { background: var(--primary-green); box-shadow: 0 3px 10px rgba(0,0,0,0.1); }
         .dashboard { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; max-width: 1400px; margin: 0 auto; }
-        .link-card { background: var(--card-bg); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.06); display: flex; flex-direction: column; position: relative; }
-        .card-content { padding: 18px; flex-grow: 1; display: flex; flex-direction: column; }
-        .card-title { font-weight: 700; margin-bottom: 8px; padding-right: 45px; line-height: 1.4; }
-        .tag-badge { font-size: 10px; background: #e8f5e9; padding: 2px 8px; border-radius: 4px; color: var(--primary-green); margin: 0 4px 4px 0; display: inline-block; }
-        .info-section { margin-top: 5px; font-size: 0.88em; border-top: 1px solid #eee; padding-top: 10px; }
-        
-        .btn { position: absolute; right: 15px; top: 18px; width: 40px; height: 40px; background: var(--primary-green); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; text-decoration: none; font-size: 1.2em; }
-
-        /* 手機版補強：取消硬性寬度，防止按鈕被擠出螢幕 */
-        @media (max-width: 768px) {
-            .dashboard.list-mode { grid-template-columns: 1fr; }
-            .list-mode .link-card { flex-direction: column; padding: 15px; padding-right: 60px; }
-            .list-mode .card-content { gap: 5px; }
-            .btn { width: 36px; height: 36px; }
-        }
+        .link-card { background: var(--card-bg); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.06); position: relative; padding: 18px; display: flex; flex-direction: column; }
+        .card-title { font-weight: 700; margin-bottom: 8px; padding-right: 40px; }
+        .tag-badge { font-size: 10px; background: #e8f5e9; padding: 2px 8px; border-radius: 4px; color: var(--primary-green); margin-right: 4px; }
+        .btn { position: absolute; right: 15px; top: 18px; width: 38px; height: 38px; background: var(--primary-green); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; text-decoration: none; }
     </style>
 </head>
 <body>
     <div class="header"><h1>我的小幫手</h1></div>
-    <div class="controls-container">
-        <div class="search-bar-row">
-            <input type="text" id="search-input" placeholder="🔍 搜尋..." onkeyup="handleSearch()">
-        </div>
-    </div>
+    <div class="controls-container"><input type="text" id="search-input" placeholder="🔍 搜尋..." onkeyup="handleSearch()"></div>
     <div id="filter-bar" class="filter-container"></div>
     <div id="dashboard" class="dashboard"></div>
 
-<script>
-    let allItems = [];
-    const customColors = ['#31483c', '#4b645a', '#658078', '#7f9c96', '#99b9b4'];
-
-    async function init() {
-        try {
-            const res = await fetch('./data.json?t=' + Date.now());
+    <script>
+        let allItems = [];
+        async function init() {
+            const res = await fetch('./data.json');
             const data = await res.json();
             allItems = data.items;
             renderFilters(allItems);
             renderCards(allItems);
-        } catch (err) { console.error("載入失敗"); }
-    }
+        }
 
-    function renderFilters(items) {
-        const bar = document.getElementById('filter-bar');
-        const tagSet = new Set();
-        
-        items.forEach(item => {
-            if (item.tags && item.tags.length > 0) {
-                // 優先邏輯：如果標籤包含 Travel，強制將 Travel 作為該項目的主分類
-                const hasTravel = item.tags.some(t => t.trim() === "Travel");
-                const mainTag = hasTravel ? "Travel" : item.tags[0].trim();
-                tagSet.add(mainTag);
-            }
-        });
+        function renderFilters(items) {
+            const bar = document.getElementById('filter-bar');
+            const tags = new Set();
+            items.forEach(i => { if(i.tags && i.tags[0]) tags.add(i.tags[0]); });
+            bar.innerHTML = '<button class="filter-btn active" onclick="filterContent(\'all\', this)">全部</button>';
+            tags.forEach(t => {
+                const btn = document.createElement('button');
+                btn.className = 'filter-btn';
+                btn.innerText = t;
+                btn.onclick = () => filterContent(t, btn);
+                bar.appendChild(btn);
+            });
+        }
 
-        bar.innerHTML = `<button class="filter-btn active" style="background:#31483c" onclick="filterContent('all', this)">全部</button>`;
-        Array.from(tagSet).forEach((tag, idx) => {
-            const btn = document.createElement('button');
-            btn.className = 'filter-btn';
-            btn.innerText = tag;
-            btn.style.backgroundColor = customColors[idx % customColors.length];
-            btn.onclick = () => filterContent(tag, btn);
-            bar.appendChild(btn);
-        });
-    }
-
-    function renderCards(items) {
-        const container = document.getElementById('dashboard');
-        container.innerHTML = '';
-        items.forEach(item => {
-            const card = document.createElement('div');
-            card.className = 'link-card';
-            
-            // 判定主分類標籤
-            const hasTravel = item.tags.some(t => t.trim() === "Travel");
-            const primaryTag = hasTravel ? "Travel" : (item.tags[0] ? item.tags[0].trim() : "");
-            
-            card.dataset.primaryTag = primaryTag;
-            card.dataset.fulltext = (item.title + (item.note || "")).toLowerCase();
-            
-            card.innerHTML = `
-                <div class="card-content">
-                    <div class="card-title">${item.title}</div>
+        function renderCards(items) {
+            const container = document.getElementById('dashboard');
+            container.innerHTML = '';
+            items.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'link-card';
+                card.dataset.tag = item.tags[0];
+                card.dataset.fulltext = (item.title + (item.note || "")).toLowerCase();
+                card.innerHTML = `<div class="card-title">${item.title}</div>
                     <div>${item.tags.map(t => `<span class="tag-badge">${t}</span>`).join('')}</div>
-                    <div class="info-section">${item.note || ""}</div>
-                    <a href="${item.link}" target="_blank" class="btn">➜</a>
-                </div>`;
-            container.appendChild(card);
-        });
-    }
+                    <div style="font-size:0.85em; margin-top:10px; color:#666">${item.note || ""}</div>
+                    <a href="${item.link}" target="_blank" class="btn">➜</a>`;
+                container.appendChild(card);
+            });
+        }
 
-    function filterContent(tag, btnEl) {
-        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-        btnEl.classList.add('active');
-        document.querySelectorAll('.link-card').forEach(card => {
-            card.style.display = (tag === 'all' || card.dataset.primaryTag === tag) ? 'flex' : 'none';
-        });
-    }
+        function filterContent(tag, btn) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.querySelectorAll('.link-card').forEach(c => {
+                c.style.display = (tag === 'all' || c.dataset.tag === tag) ? 'flex' : 'none';
+            });
+        }
 
-    function handleSearch() {
-        const q = document.getElementById('search-input').value.toLowerCase();
-        document.querySelectorAll('.link-card').forEach(card => {
-            card.style.display = card.dataset.fulltext.includes(q) ? 'flex' : 'none';
-        });
-    }
-
-    init();
-</script>
+        function handleSearch() {
+            const q = document.getElementById('search-input').value.toLowerCase();
+            document.querySelectorAll('.link-card').forEach(c => {
+                c.style.display = c.dataset.fulltext.includes(q) ? 'flex' : 'none';
+            });
+        }
+        init();
+    </script>
 </body>
 </html>
