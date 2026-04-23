@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>我的小幫手</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon.png">
+    <meta name="theme-color" content="#31483c">
+    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
         
@@ -22,7 +27,6 @@
             -webkit-font-smoothing: antialiased; 
         }
         
-        /* 頁首與搜尋控制 */
         .header { text-align: center; margin-bottom: 20px; }
         .header h1 { color: var(--primary-green); font-weight: 900; letter-spacing: 2px; }
         
@@ -59,7 +63,6 @@
             gap: 20px; max-width: 1400px; margin: 0 auto; 
         }
 
-        /* 卡片樣式 (Grid Mode) */
         .link-card { 
             background: var(--card-bg); border-radius: 12px; overflow: hidden; 
             box-shadow: 0 4px 12px rgba(0,0,0,0.06); 
@@ -88,7 +91,6 @@
             font-size: 1.2em; flex-shrink: 0; 
         }
 
-        /* --- 清單模式 (List Mode) --- */
         .dashboard.list-mode { grid-template-columns: 1fr; gap: 8px; }
         
         .list-mode .link-card { 
@@ -137,12 +139,11 @@
             display: none; justify-content: center; align-items: center; z-index: 1000; cursor: pointer;
         }
 
-        /* --- 手機版：四行式排版優化 --- */
         @media (max-width: 600px) {
             .list-mode .link-card { 
                 padding: 15px; 
                 min-height: auto; 
-                align-items: flex-start; /* 讓箭頭對齊上方 */
+                align-items: flex-start; 
             }
             
             .list-mode .card-content { 
@@ -151,16 +152,14 @@
                 gap: 5px; 
             }
 
-            /* 第一行：標題 */
             .list-mode .card-title { 
                 flex: none; 
                 width: 100%; 
                 font-size: 1.1em; 
-                white-space: normal; /* 手機上允許折行 */
+                white-space: normal; 
                 font-weight: 700;
             }
 
-            /* 第二行：標籤 */
             .list-mode .tag-wrapper { 
                 flex: none; 
                 width: 100%; 
@@ -170,7 +169,6 @@
                 overflow: visible;
             }
 
-            /* 第三、四行：資訊區塊 */
             .list-mode .info-section { 
                 flex-direction: column; 
                 align-items: flex-start; 
@@ -188,7 +186,7 @@
             
             .list-mode .btn {
                 margin-left: 10px;
-                align-self: center; /* 箭頭置中對齊 */
+                align-self: center; 
             }
         }
     </style>
