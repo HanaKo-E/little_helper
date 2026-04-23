@@ -3,103 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的小幫手</title>
+    <title>我的小幫手 - 穩定版</title>
     <style>
-        :root { 
-            --primary-green: #31483c; 
-            --bg-color: #f1f8e9; 
-            --card-bg: #ffffff; 
-            --map-blue: #3498db; 
-        }
-
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-            background-color: var(--bg-color); 
-            margin: 0; padding: 15px; 
-            color: #263238; 
-        }
+        :root { --primary-green: #31483c; --bg-color: #f1f8e9; }
+        body { font-family: sans-serif; background: var(--bg-color); padding: 15px; margin: 0; }
         
-        .controls-container { max-width: 800px; margin: 0 auto 15px; position: sticky; top: 10px; z-index: 101; }
-        .search-bar-row { display: flex; gap: 8px; }
-        #search-input { flex-grow: 1; padding: 10px 20px; border-radius: 25px; border: 2px solid var(--primary-green); outline: none; }
+        .controls-container { max-width: 800px; margin: 0 auto 15px; position: sticky; top: 10px; z-index: 100; }
+        #search-input { width: 100%; padding: 12px 20px; border-radius: 25px; border: 2px solid var(--primary-green); outline: none; box-sizing: border-box; }
         
-        .mode-toggle { display: flex; background: #cfd8dc; border-radius: 20px; padding: 2px; }
-        .mode-btn { border: none; background: none; padding: 6px 12px; cursor: pointer; border-radius: 18px; font-size: 0.85em; }
-        .mode-btn.active { background: var(--primary-green); color: white; }
+        .filter-container { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin: 15px 0; }
+        .filter-btn { padding: 8px 16px; border-radius: 20px; border: none; color: white; cursor: pointer; font-weight: bold; opacity: 0.6; transition: 0.3s; }
+        .filter-btn.active { opacity: 1; transform: scale(1.1); box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
 
-        .filter-container { display: flex; justify-content: center; flex-wrap: wrap; gap: 6px; margin-bottom: 15px; }
-        .filter-btn { padding: 6px 14px; border-radius: 20px; cursor: pointer; font-size: 0.9em; border: none; color: white; font-weight: 500; transition: 0.3s; }
-
-        .dashboard { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; max-width: 1400px; margin: 0 auto; }
-        .link-card { background: var(--card-bg); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); display: flex; flex-direction: column; }
-        .cover-img { width: 100%; height: 140px; object-fit: cover; background: #eee; }
-        .card-content { padding: 15px; flex-grow: 1; display: flex; flex-direction: column; position: relative; }
-        .card-title { font-weight: 700; font-size: 1em; margin-bottom: 5px; line-height: 1.4; }
-        .tag-badge { font-size: 10px; background: #e8f5e9; padding: 2px 8px; border-radius: 4px; color: var(--primary-green); margin-right: 4px; display: inline-block; margin-top: 4px; }
+        .dashboard { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; max-width: 1200px; margin: 0 auto; }
         
-        .info-section { font-size: 0.85em; border-top: 1px solid #eee; padding-top: 8px; margin-top: 10px; }
-        .btn { width: 38px; height: 38px; background: var(--primary-green); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; text-decoration: none; margin-top: 10px; align-self: flex-end; }
+        /* 卡片樣式 */
+        .link-card { background: white; border-radius: 12px; padding: 15px; display: flex; flex-direction: column; position: relative; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .card-title { font-weight: bold; margin-bottom: 10px; padding-right: 40px; }
+        .tag-badge { font-size: 11px; background: #e8f5e9; padding: 3px 8px; border-radius: 5px; color: var(--primary-green); margin: 0 4px 4px 0; display: inline-block; }
+        
+        /* 箭頭按鈕 - 絕對定位防擠壓 */
+        .btn { position: absolute; right: 15px; top: 15px; width: 35px; height: 35px; background: var(--primary-green); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; text-decoration: none; }
 
-        /* 手機清單模式：徹底修正箭頭只剩一半與換行問題 */
-        @media (max-width: 768px) {
-            .dashboard.list-mode { grid-template-columns: 1fr; }
-            .list-mode .link-card { flex-direction: column; padding: 12px 65px 12px 12px !important; position: relative; min-height: 80px; }
-            .list-mode .cover-img { display: none; }
-            .list-mode .card-content { padding: 0; width: 100%; }
-            .list-mode .info-section { border: none; padding: 0; margin-top: 5px; }
-            .list-mode .shop-name-item, .list-mode .address-item { 
-                white-space: normal !important; 
-                word-break: break-all; 
-                display: block; 
-                width: 100%;
-                font-size: 0.8em;
-            }
-            /* 強制按鈕浮動在右側中心 */
-            .list-mode .btn { 
-                position: absolute; 
-                right: 15px; 
-                top: 50%; 
-                transform: translateY(-50%); 
-                margin: 0; 
-                width: 40px; height: 40px;
-                z-index: 10;
-            }
+        @media (max-width: 600px) {
+            .dashboard { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
+
     <div class="controls-container">
-        <div class="search-bar-row">
-            <input type="text" id="search-input" placeholder="🔍 搜尋..." onkeyup="handleSearch()">
-            <div class="mode-toggle">
-                <button id="grid-btn" class="mode-btn active" onclick="setMode('grid')">卡片</button>
-                <button id="list-btn" class="mode-btn" onclick="setMode('list')">清單</button>
-            </div>
-        </div>
+        <input type="text" id="search-input" placeholder="🔍 搜尋標題或備註..." onkeyup="handleSearch()">
     </div>
+    
     <div id="filter-bar" class="filter-container"></div>
     <div id="dashboard" class="dashboard"></div>
 
 <script>
-    // 這裡直接嵌入你剛才提供的資料，並手動修正一筆為 Travel 作為測試
-    const rawData = {"result":true,"items":[{"_id":1693049978,"link":"https://www.facebook.com/watch/?ref=saved&v=1650202439333307","tags":["Excel","電腦"],"title":"Excel - Worksheet List"},{"_id":1693048966,"link":"https://www.facebook.com/watch/?ref=saved&v=864543043159230","tags":["Word","電腦"],"title":"Word - 6 Ways to Delete Blank Pages"},{"_id":1693034060,"link":"https://youtu.be/PVxHnsq7znE","tags":["Facial Care","刮痧"],"title":"毛毛 - 面部刮痧"},{"_id":1692972048,"link":"https://youtu.be/re51U6rs2Ok","tags":["Health","輕運動"],"title":"腋下淋巴按壓"},{"_id":999999,"link":"https://www.google.com","tags":["Travel"],"title":"【測試項】我的旅遊清單 (這行證明 Travel 按鈕有效)"}]};
-
-    let allItems = rawData.items;
-    const colors = ['#31483c', '#4b645a', '#658078', '#7f9c96', '#99b9b4'];
-
-    function init() {
-        renderFilters(allItems);
-        renderCards(allItems);
+    // 自動修剪空格的強化腳本
+    async function loadData() {
+        try {
+            const response = await fetch('./data.json');
+            const data = await response.json();
+            const items = data.items;
+            
+            renderFilters(items);
+            renderCards(items);
+        } catch (err) {
+            console.error("資料載入失敗:", err);
+            document.getElementById('dashboard').innerHTML = "載入失敗，請檢查 data.json 格式";
+        }
     }
 
     function renderFilters(items) {
         const bar = document.getElementById('filter-bar');
         const tagSet = new Set();
-        items.forEach(i => {
-            if (i.tags && i.tags.length > 0) tagSet.add(String(i.tags[0]).trim());
-        });
         
-        bar.innerHTML = `<button class="filter-btn" style="background:#31483c" onclick="filterContent('all', this)">全部</button>`;
+        // 抓取所有項目的第一個標籤，並強行去除空格
+        items.forEach(item => {
+            if (item.tags && item.tags.length > 0) {
+                tagSet.add(item.tags[0].trim());
+            }
+        });
+
+        bar.innerHTML = `<button class="filter-btn active" style="background:#31483c" onclick="filterContent('all', this)">全部</button>`;
+        
+        const colors = ['#4b645a', '#658078', '#7f9c96', '#99b9b4', '#3498db'];
         Array.from(tagSet).forEach((tag, idx) => {
             const btn = document.createElement('button');
             btn.className = 'filter-btn';
@@ -113,47 +82,49 @@
     function renderCards(items) {
         const container = document.getElementById('dashboard');
         container.innerHTML = '';
+        
         items.forEach(item => {
             const card = document.createElement('div');
             card.className = 'link-card';
-            const primaryTag = (item.tags && item.tags.length > 0) ? String(item.tags[0]).trim() : "";
+            
+            // 重要：這裡儲存 tag 時也強行去除空格
+            const primaryTag = (item.tags && item.tags.length > 0) ? item.tags[0].trim() : "未分類";
             card.dataset.tag = primaryTag;
             card.dataset.fulltext = (item.title + (item.note || "")).toLowerCase();
-            
+
             card.innerHTML = `
-                <div class="card-content">
-                    <div class="card-title">${item.title}</div>
-                    <div>${(item.tags || []).map(t => `<span class="tag-badge">${t}</span>`).join('')}</div>
-                    <a href="${item.link}" target="_blank" class="btn">➜</a>
-                </div>`;
+                <div class="card-title">${item.title}</div>
+                <div>${item.tags.map(t => `<span class="tag-badge">${t}</span>`).join('')}</div>
+                <a href="${item.link}" target="_blank" class="btn">➜</a>
+            `;
             container.appendChild(card);
         });
     }
 
     function filterContent(tag, btn) {
-        document.querySelectorAll('.link-card').forEach(c => {
-            c.style.display = (tag === 'all' || c.dataset.tag === tag) ? 'flex' : 'none';
-        });
-        document.querySelectorAll('.filter-btn').forEach(b => b.style.opacity = '0.6');
-        btn.style.opacity = '1';
-    }
+        // 1. 切換按鈕樣式
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
 
-    function setMode(mode) {
-        const d = document.getElementById('dashboard');
-        if (mode === 'list') d.classList.add('list-mode');
-        else d.classList.remove('list-mode');
-        document.getElementById('grid-btn').classList.toggle('active', mode === 'grid');
-        document.getElementById('list-btn').classList.toggle('active', mode === 'list');
+        // 2. 執行過濾
+        document.querySelectorAll('.link-card').forEach(card => {
+            if (tag === 'all' || card.dataset.tag === tag) {
+                card.style.display = 'flex';
+            } else {
+                card.style.display = 'none';
+            }
+        });
     }
 
     function handleSearch() {
         const q = document.getElementById('search-input').value.toLowerCase();
-        document.querySelectorAll('.link-card').forEach(c => {
-            c.style.display = c.dataset.fulltext.includes(q) ? 'flex' : 'none';
+        document.querySelectorAll('.link-card').forEach(card => {
+            card.style.display = card.dataset.fulltext.includes(q) ? 'flex' : 'none';
         });
     }
 
-    init();
+    // 啟動
+    loadData();
 </script>
 </body>
 </html>
