@@ -92,7 +92,7 @@
             font-size: 1.2em; flex-shrink: 0; 
         }
 
-        /* --- 清單模式修正 (List Mode) --- */
+        /* --- 清單模式 (List Mode) --- */
         .dashboard.list-mode { grid-template-columns: 1fr; gap: 8px; }
         
         .list-mode .link-card { 
@@ -140,7 +140,7 @@
             margin-left: 20px; 
             width: 36px; 
             height: 36px; 
-            flex: 0 0 36px; /* 強制按鈕不縮小，確保箭頭出現 */
+            flex: 0 0 36px;
             display: flex !important;
         }
 
@@ -150,7 +150,6 @@
             display: none; justify-content: center; align-items: center; z-index: 1000; cursor: pointer;
         }
 
-        /* 手機版微調 */
         @media (max-width: 600px) {
             .list-mode .card-content { gap: 10px; }
             .list-mode .card-title { flex: 0 0 100px; }
@@ -262,13 +261,17 @@
                 let name = ""; let addr = ""; let extraNote = "";
                 if (item.note && item.note.includes('|')) {
                     const parts = item.note.split('|').map(p => p.trim());
-                    name = parts[0]; addr = parts[1]; extraNote = parts[2] || "";
+                    name = parts[0] || ""; 
+                    addr = parts[1] || ""; 
+                    extraNote = parts[2] || "";
                 } else {
                     extraNote = item.note || "";
                 }
 
                 const mapUrl = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(addr || name);
-                let nameHtml = `<div class="info-item shop-name-item">🏠 ${name || '未提供名稱'}</div>`;
+                
+                // 修正：如果沒有店名或地址，直接留白不顯示預設文字
+                let nameHtml = name ? `<div class="info-item shop-name-item">🏠 ${name}</div>` : '<div class="info-item shop-name-item"></div>';
                 let addrHtml = addr ? `<div class="info-item address-item">📍 <a href="${mapUrl}" target="_blank" class="map-link">${addr}</a></div>` : '<div class="info-item address-item"></div>';
                 let noteHtml = extraNote ? `<div class="note-text">💡 ${extraNote}</div>` : '';
 
