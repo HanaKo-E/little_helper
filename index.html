@@ -80,11 +80,9 @@
         .info-section { margin-top: 5px; font-size: 0.88em; line-height: 1.6; border-top: 1px solid #eee; padding-top: 10px; }
         .info-item { margin-bottom: 4px; display: flex; align-items: flex-start; gap: 6px; }
         
-        /* 徹底移除底線 */
         .map-link { color: var(--map-blue); text-decoration: none !important; font-weight: 500; }
         .map-link:hover { text-decoration: none !important; opacity: 0.8; }
         
-        /* 備註：非斜體，維持色值與大小 */
         .note-text { color: #78909c; font-style: normal; font-size: 0.9em; margin-top: 5px; }
 
         .btn { 
@@ -94,33 +92,70 @@
             font-size: 1.2em; flex-shrink: 0; 
         }
 
-        /* --- 清單模式 (List Mode) --- */
+        /* --- 清單模式修正 (List Mode) --- */
         .dashboard.list-mode { grid-template-columns: 1fr; gap: 8px; }
-        .list-mode .link-card { flex-direction: row; min-height: 60px; padding: 8px 24px; align-items: center; }
-        .list-mode .cover-img { display: none; }
-        .list-mode .card-content { padding: 0; flex-direction: row; align-items: center; width: 100%; gap: 30px; }
         
-        .list-mode .card-title { margin-bottom: 0; flex: 0 0 18%; min-width: 160px; }
-        .list-mode .tag-wrapper { margin-bottom: 0; flex: 0 0 14%; min-width: 125px; }
-        .list-mode .tag-badge { font-size: 12px; padding: 3px 10px; }
-        
-        .list-mode .info-section { border-top: none; padding-top: 0; margin-top: 0; display: flex; flex: 1; align-items: center; gap: 0; }
-        
-        /* 店名寬度拉長，地址右移 */
-        .list-mode .shop-name-item { 
-            flex: 0 0 280px; font-size: 0.95em; font-weight: 600; color: #455a64; 
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 20px; 
+        .list-mode .link-card { 
+            flex-direction: row; 
+            min-height: 70px; 
+            padding: 8px 24px; 
+            align-items: center; 
+            justify-content: space-between; 
         }
-        .list-mode .address-item { flex: 1; font-size: 0.9em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         
-        /* 清單中隱藏 Note */
+        .list-mode .cover-img { display: none; }
+        
+        .list-mode .card-content { 
+            padding: 0; 
+            flex-direction: row; 
+            align-items: center; 
+            width: 100%; 
+            gap: 20px; 
+            overflow: hidden;
+        }
+        
+        .list-mode .card-title { margin-bottom: 0; flex: 0 0 180px; font-size: 1em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .list-mode .tag-wrapper { margin-bottom: 0; flex: 0 0 120px; display: flex; gap: 4px; overflow: hidden; }
+        .list-mode .tag-badge { font-size: 11px; padding: 2px 8px; white-space: nowrap; }
+        
+        .list-mode .info-section { 
+            border-top: none; padding-top: 0; margin-top: 0; 
+            display: flex; flex: 1; align-items: center; gap: 20px; 
+            overflow: hidden;
+        }
+        
+        .list-mode .shop-name-item { 
+            flex: 0 0 200px; color: #455a64; font-weight: 600; 
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
+        }
+        
+        .list-mode .address-item { 
+            flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
+        }
+        
         .list-mode .note-text { display: none; }
-        .list-mode .btn { margin-top: 0; margin-left: 20px; width: 36px; height: 36px; }
+        
+        .list-mode .btn { 
+            margin-top: 0; 
+            margin-left: 20px; 
+            width: 36px; 
+            height: 36px; 
+            flex: 0 0 36px; /* 強制按鈕不縮小，確保箭頭出現 */
+            display: flex !important;
+        }
 
         #back-to-top { 
             position: fixed; bottom: 25px; right: 25px; width: 45px; height: 45px; 
             background: var(--primary-green); color: white; border-radius: 50%; 
             display: none; justify-content: center; align-items: center; z-index: 1000; cursor: pointer;
+        }
+
+        /* 手機版微調 */
+        @media (max-width: 600px) {
+            .list-mode .card-content { gap: 10px; }
+            .list-mode .card-title { flex: 0 0 100px; }
+            .list-mode .tag-wrapper, .list-mode .address-item { display: none; }
+            .list-mode .shop-name-item { flex: 1; }
         }
     </style>
 </head>
@@ -148,11 +183,7 @@
 
     <script>
         let allItems = [];
-        // 9 個特定色階
-        const customColors = [
-            '#31483c', '#3e564b', '#4b645a', '#587269', 
-            '#658078', '#728e87', '#7f9c96', '#8caaa5', '#99b9b4'
-        ];
+        const customColors = ['#31483c', '#3e564b', '#4b645a', '#587269', '#658078', '#728e87', '#7f9c96', '#8caaa5', '#99b9b4'];
 
         async function init() {
             try {
@@ -167,23 +198,19 @@
             }
         }
 
-        // --- 分類按鈕與指定色階邏輯 ---
         function renderFilters(items) {
             const filterBar = document.getElementById('filter-bar');
             const primaryTags = new Set();
             items.forEach(item => { if (item.tags && item.tags.length > 0) primaryTags.add(item.tags[0]); });
-            
             const tagArray = Array.from(primaryTags);
             filterBar.innerHTML = ''; 
 
-            // 建立全部按鈕
             const btnAll = document.createElement('button');
             btnAll.className = 'filter-btn active';
             btnAll.innerText = '全部';
             btnAll.onclick = () => filterContent('all', btnAll);
             filterBar.appendChild(btnAll);
 
-            // 建立其他標籤
             tagArray.forEach((tag) => {
                 const btn = document.createElement('button');
                 btn.className = 'filter-btn';
@@ -191,7 +218,6 @@
                 btn.onclick = () => filterContent(tag, btn);
                 filterBar.appendChild(btn);
             });
-
             updateFilterStyles();
         }
 
@@ -203,10 +229,9 @@
                     btn.style.color = '#31483c';
                     btn.style.borderColor = '#31483c';
                 } else {
-                    const colorIndex = index % customColors.length;
-                    const targetColor = customColors[colorIndex];
+                    const targetColor = customColors[index % customColors.length];
                     btn.style.backgroundColor = targetColor;
-                    btn.style.color = 'white'; // 強制白色字
+                    btn.style.color = 'white';
                     btn.style.borderColor = 'transparent';
                 }
             });
@@ -216,7 +241,6 @@
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             btnEl.classList.add('active');
             updateFilterStyles();
-
             const query = tag.toLowerCase();
             document.querySelectorAll('.link-card').forEach(card => {
                 const cardTag = (card.dataset.primaryTag || "").toLowerCase();
@@ -224,7 +248,6 @@
             });
         }
 
-        // --- 卡片渲染邏輯 ---
         function renderCards(items) {
             const container = document.getElementById('dashboard');
             container.innerHTML = '';
@@ -245,8 +268,8 @@
                 }
 
                 const mapUrl = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(addr || name);
-                let nameHtml = name ? `<div class="info-item shop-name-item">🏠 ${name}</div>` : `<div class="info-item shop-name-item"></div>`;
-                let addrHtml = addr ? `<div class="info-item address-item">📍 <a href="${mapUrl}" target="_blank" class="map-link">${addr}</a></div>` : `<div class="info-item address-item"></div>`;
+                let nameHtml = `<div class="info-item shop-name-item">🏠 ${name || '未提供名稱'}</div>`;
+                let addrHtml = addr ? `<div class="info-item address-item">📍 <a href="${mapUrl}" target="_blank" class="map-link">${addr}</a></div>` : '<div class="info-item address-item"></div>';
                 let noteHtml = extraNote ? `<div class="note-text">💡 ${extraNote}</div>` : '';
 
                 card.innerHTML = `
@@ -295,5 +318,3 @@
     </script>
 </body>
 </html>
-
-
