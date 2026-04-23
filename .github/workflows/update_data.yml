@@ -14,8 +14,8 @@ jobs:
       - name: Fetch Data from Raindrop
         run: |
           curl -H "Authorization: Bearer ${{ secrets.RAINDROP_TOKEN }}" \
-          "https://api.raindrop.io/rest/v1/raindrops/0" > data.json
-
+          "https://api.raindrop.io/rest/v1/raindrops/70031060?perpage=100" > data.json
+          
       - name: Commit and Push if changed
         run: |
           git config --global user.name "GitHub Action"
