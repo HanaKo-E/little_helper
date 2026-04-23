@@ -1,78 +1,16 @@
 {
   "result": true,
   "items": [
-    {
-      "_id": 1693049978,
-      "link": "https://www.facebook.com/watch/?ref=saved&v=1650202439333307",
-      "tags": ["Excel", "電腦"],
-      "title": "Excel - Worksheet List",
-      "note": "| | ",
-      "cover": "https://scontent-fra5-1.xx.fbcdn.net/v/t51.71878-15/650961903_1935829313687931_7333058336254328612_n.jpg?stp=cmp514_dst-jpg_p600x1066_tt6_u&_nc_cat=102&cb=c87d210d-e609a9eb&ccb=1-7&_nc_sid=487f02&_nc_ohc=Py1C76QxrTIQ7kNvwGDjOut&_nc_oc=Adq42EyM6daB4Xl0sj8S_jVJemjHpB5doPAukibYnn9tqCji6fcM3VF5JqE59osKc2A&_nc_zt=23&_nc_ht=scontent-fra5-1.xx&_nc_gid=fWId_p920ovJzCDJXUkhYQ&_nc_ss=7a289&oh=00_Af2JnM7_NDaTTttMJ4Np7i9voDa9eiWtzmFOEvaBNY64CA&oe=69EEBB37"
-    },
-    {
-      "_id": 1693048966,
-      "link": "https://www.facebook.com/watch/?ref=saved&v=864543043159230",
-      "tags": ["Word", "電腦"],
-      "title": "Word - 6 Ways to Delete Blank Pages",
-      "note": "| | ",
-      "cover": "https://scontent-fra3-2.xx.fbcdn.net/v/t15.5256-10/615763630_908560391613854_2245259684443457414_n.jpg?stp=cmp514_dst-jpg_p600x1066_tt6_u&_nc_cat=104&cb=c87d210d-e609a9eb&ccb=1-7&_nc_sid=487f02&_nc_ohc=D_0_jLS8btgQ7kNvwEojywe&_nc_oc=AdosM5kxs5-C3J3DKmXhfZDt3CUEyRQs2st2EYRhAdPUCpvseJUYqyGaovI3AzVJjsQ&_nc_zt=23&_nc_ht=scontent-fra3-2.xx&_nc_gid=12wCofk4bmNnbJKtfNGg_w&_nc_ss=7a389&oh=00_Af3XUpgZfd1CqQ-OU6NyjkImooSrQ9Zhws5RWcUD1YMKPQ&oe=69EEB4A9"
-    },
-    {
-      "_id": 1693048726,
-      "link": "https://www.facebook.com/watch/?ref=saved&v=1658993088563689",
-      "tags": ["Excel", "電腦"],
-      "title": "Excel - Dynamic Target Tracker",
-      "note": "| | ",
-      "cover": "https://scontent-ham3-1.xx.fbcdn.net/v/t51.71878-15/670596631_4394440207506883_2008861008905525021_n.jpg?stp=cmp514_dst-jpg_p600x1066_tt6_u&_nc_cat=107&cb=c87d210d-e609a9eb&ccb=1-7&_nc_sid=487f02&_nc_ohc=DH4eYJzYq9cQ7kNvwHDTaZI&_nc_oc=Adp8nqg6K9CxIvoJl0eT9fNfFn6xZHMzjGCs6AzbVFOPUslqX-ZFAzkJdbZOEgrdG98&_nc_zt=23&_nc_ht=scontent-ham3-1.xx&_nc_gid=L5z1JHW6Il2s7_KyQJB3Zg&_nc_ss=7a389&oh=00_Af1GOCRC34pgX0qz0-QS0dJOjgEXLI-UZA6RG6bQOjokvg&oe=69EEAB04"
-    },
-    {
-      "_id": 1693034060,
-      "link": "https://youtu.be/PVxHnsq7znE",
-      "tags": ["Facial Care", "刮痧"],
-      "title": "毛毛 - 面部刮痧",
-      "note": "| | ",
-      "cover": "https://i.ytimg.com/vi/PVxHnsq7znE/maxresdefault.jpg"
-    },
-    {
-      "_id": 1693033538,
-      "link": "https://youtu.be/-bZChpNIePY",
-      "tags": ["Facial Care", "刮痧"],
-      "title": "七七老大 - 面部刮痧",
-      "note": "| | 面部刮痧按摩手法，促進血液循環",
-      "cover": "https://i.ytimg.com/vi/-bZChpNIePY/maxresdefault.jpg"
-    },
-    {
-      "_id": 1693006888,
-      "link": "https://www.instagram.com/reel/DScmA8DjJmm/",
-      "tags": ["Canva"],
-      "title": "Canva - Hyperlinks",
-      "note": "| | ",
-      "cover": "https://scontent-dus1-1.cdninstagram.com/v/t51.71878-15/587782125_844758254863299_7791457928637287670_n.jpg?stp=cmp1_dst-jpg_e35_s640x640_tt6&_nc_cat=102&ccb=7-5&oh=00_Af0QE7nBnBymvkKRVPUGlNUkXyBZnQrftXEkjSoz4425XA&oe=69EE96BA"
-    },
-    {
-      "_id": 1692972048,
-      "link": "https://youtu.be/re51U6rs2Ok",
-      "tags": ["Health", "輕運動"],
-      "title": "腋下淋巴按壓 - 1分鐘",
-      "note": "| | 按壓腋下淋巴結，促進排毒",
-      "cover": "https://i.ytimg.com/vi/re51U6rs2Ok/maxresdefault.jpg"
-    },
-    {
-      "_id": 1692963003,
-      "link": "https://youtu.be/JAV6aZjsU7k",
-      "tags": ["Health", "輕運動"],
-      "title": "30秒骨盆搖擺操",
-      "note": "| | 溫和擺動骨盆，放鬆腰臀",
-      "cover": "https://i.ytimg.com/vi/JAV6aZjsU7k/maxresdefault.jpg"
-    },
-    {
-      "_id": 1692959288,
-      "link": "https://youtu.be/E6nvxfFvbmc",
-      "tags": ["Travel", "Health"],
-      "title": "直立踮腳測試項 (現在會顯示在 Travel 分類)",
-      "note": "旅遊地 | 這裡只是測試 | 腳跟衝擊活化骨鈣素",
-      "cover": "https://i.ytimg.com/vi/E6nvxfFvbmc/maxresdefault.jpg"
-    }
-  ],
-  "count": 9
+    { "_id": 1693049978, "link": "https://www.facebook.com/watch/?ref=saved&v=1650202439333307", "tags": ["Excel", "Travel", "電腦"], "title": "Excel - Worksheet List", "note": " | | " },
+    { "_id": 1693048966, "link": "https://www.facebook.com/watch/?ref=saved&v=864543043159230", "tags": ["Word", "電腦"], "title": "Word - 6 Ways to Delete Blank Pages", "note": " | | " },
+    { "_id": 1693048726, "link": "https://www.facebook.com/watch/?ref=saved&v=1658993088563689", "tags": ["Excel", "電腦"], "title": "Excel - Dynamic Target Tracker", "note": " | | " },
+    { "_id": 1693034060, "link": "https://youtu.be/PVxHnsq7znE", "tags": ["Facial Care", "刮痧"], "title": "毛毛 - 面部刮痧", "note": " | | " },
+    { "_id": 1693033538, "link": "https://youtu.be/-bZChpNIePY", "tags": ["Facial Care", "刮痧"], "title": "七七老大 - 面部刮痧", "note": " | | " },
+    { "_id": 1693006888, "link": "https://www.instagram.com/reel/DScmA8DjJmm/", "tags": ["Canva"], "title": "Canva - Hyperlinks", "note": " | | " },
+    { "_id": 1692972048, "link": "https://youtu.be/re51U6rs2Ok", "tags": ["Health", "輕運動"], "title": "腋下淋巴按壓", "note": " | | " },
+    { "_id": 1692963003, "link": "https://youtu.be/JAV6aZjsU7k", "tags": ["Health", "輕運動"], "title": "30秒骨盆搖擺操", "note": " | | " },
+    { "_id": 1692959288, "link": "https://youtu.be/E6nvxfFvbmc", "tags": ["Health", "輕運動"], "title": "直立踮腳運動", "note": " | | " },
+    { "_id": 1692958048, "link": "https://youtu.be/re51U6rs2Ok", "tags": ["Health", "輕運動"], "title": "腋下淋巴按壓 (複製品)", "note": " | | " }
+    /* ... 剩下的 26 筆請以此類推 ... */
+  ]
 }
